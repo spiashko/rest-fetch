@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.restpersistence.demo.cat.Cat;
 import com.spiashko.restpersistence.demo.crudbase.View;
-import com.spiashko.restpersistence.demo.crudbase.entity.BaseJournalEntity;
+import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "person")
-public class Person extends BaseJournalEntity {
+public class Person extends BaseEntity {
 
     public static final String KITTENS = "kittens";
 

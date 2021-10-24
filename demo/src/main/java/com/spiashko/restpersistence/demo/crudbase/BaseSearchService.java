@@ -1,13 +1,13 @@
 package com.spiashko.restpersistence.demo.crudbase;
 
-import com.spiashko.restpersistence.demo.crudbase.entity.BaseJournalEntity;
+import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BaseSearchService<E extends BaseJournalEntity> {
+public interface BaseSearchService<E extends BaseEntity> {
 
     List<E> findAll();
 

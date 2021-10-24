@@ -1,9 +1,9 @@
 package com.spiashko.restpersistence.demo.crudbase;
 
 
-import com.spiashko.restpersistence.demo.crudbase.entity.BaseJournalEntity;
+import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
 import com.spiashko.restpersistence.demo.crudbase.exception.EntityNotFoundException;
-import com.spiashko.restpersistence.demo.crudbase.repository.BaseJournalRepository;
+import com.spiashko.restpersistence.demo.crudbase.repository.BaseRepository;
 import net.jodah.typetools.TypeResolver;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public abstract class BaseSearchServiceImpl<
-        E extends BaseJournalEntity,
-        R extends BaseJournalRepository<E>>
+        E extends BaseEntity,
+        R extends BaseRepository<E>>
         implements BaseSearchService<E> {
 
     private final R repository;
@@ -23,7 +23,7 @@ public abstract class BaseSearchServiceImpl<
     protected BaseSearchServiceImpl(R repository) {
         this.repository = repository;
 
-        Class<?>[] typeArguments = TypeResolver.resolveRawArguments(BaseJournalRepository.class, repository.getClass());
+        Class<?>[] typeArguments = TypeResolver.resolveRawArguments(BaseRepository.class, repository.getClass());
         this.persistentClass = (Class<E>) typeArguments[0];
     }
 

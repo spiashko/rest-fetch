@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,9 +38,9 @@ public class CatRestController {
             @RfetchSpec Specification<Cat> rFetchSpec,
             @RsqlSpec Specification<Cat> rSqlSpec
     ) {
-        val spec = Specification
-                .where(rFetchSpec)
-                .and(rSqlSpec);
+        val spec = Stream.of(rFetchSpec, rSqlSpec)
+                .reduce(Specification.where(null),
+                        Specification::and);
         List<Cat> result = searchService.findAll(spec);
         return result;
     }

@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
@@ -9,12 +10,9 @@
         <sql>
             create table person
             (
-                id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                id   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-                created_at TIMESTAMP   NOT NULL,
-                updated_at TIMESTAMP   NOT NULL,
-
-                name       TEXT UNIQUE NOT NULL
+                name TEXT UNIQUE NOT NULL
             );
         </sql>
         <rollback>
@@ -27,16 +25,15 @@
         <sql>
             create table cat
             (
-                id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-                created_at TIMESTAMP                   NOT NULL,
-                updated_at TIMESTAMP                   NOT NULL,
+                name      TEXT UNIQUE                 NOT NULL,
+                dob       DATE                        NOT NULL,
 
-                name       TEXT UNIQUE                 NOT NULL,
-                dob        DATE                        NOT NULL,
+                fk_owner  UUID REFERENCES person (id) NOT NULL,
 
-                fk_owner   UUID REFERENCES person (id) NOT NULL,
-                fk_parent  UUID REFERENCES cat (id)
+                fk_father UUID REFERENCES cat (id),
+                fk_mother UUID REFERENCES cat (id)
             );
         </sql>
         <rollback>

@@ -7,13 +7,13 @@ import com.spiashko.restpersistence.demo.person.PersonCreationService;
 import com.spiashko.restpersistence.demo.person.PersonSearchService;
 import com.spiashko.restpersistence.rfetch.RfetchSpec;
 import com.spiashko.restpersistence.rsqlspec.RsqlSpec;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,13 +33,13 @@ public class PersonRestController {
     @JsonView(View.Retrieve.class)
     @GetMapping
     public List<Person> findAll(
-            @Parameter(hidden = true)
             @RfetchSpec Specification<Person> rFetchSpec,
             @RsqlSpec Specification<Person> rSqlSpec
     ) {
-        val spec = Specification
-                .where(rFetchSpec)
-                .and(rSqlSpec);
+
+        val spec = Stream.of(rFetchSpec, rSqlSpec)
+                .reduce(Specification.where(null),
+                        Specification::and);
         List<Person> result = searchService.findAll(spec);
         return result;
     }

@@ -1,6 +1,7 @@
 package com.spiashko.restpersistence.rfetch;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyPath;
@@ -14,10 +15,14 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final List<RfetchValueCustomizer> valueCustomizers;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -46,23 +51,27 @@ public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver
 
         String value = webRequest.getParameter(paramName);
 
+        for (RfetchValueCustomizer customizer : valueCustomizers) {
+            value = customizer.customize(value);
+        }
+
         if (value == null) {
             return null;
         }
 
         Specification<Object> rfetchSpec = Arrays.stream(value.split(";"))
+                .map(this::buildSpec)
                 .reduce(Specification.where(null),
-                        (objectSpecification, s) -> objectSpecification.and(buildSpec(s)),
                         Specification::and);
 
         return rfetchSpec;
     }
 
     private Specification<Object> buildSpec(String attributePath) {
-        return (Specification<Object>) (root, query, builder) -> {
+        return (root, query, builder) -> {
             PropertyPath path = PropertyPath.from(attributePath, root.getJavaType());
             FetchParent<Object, Object> f = traversePath(root, path);
-            Join join = (Join) f;
+            Join<Object, Object> join = (Join<Object, Object>) f;
 
             query.distinct(true);
 

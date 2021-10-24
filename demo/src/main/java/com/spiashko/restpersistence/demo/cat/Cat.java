@@ -2,16 +2,18 @@ package com.spiashko.restpersistence.demo.cat;
 
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.restpersistence.demo.crudbase.View;
-import com.spiashko.restpersistence.demo.crudbase.entity.BaseJournalEntity;
+import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
 import com.spiashko.restpersistence.demo.person.Person;
 import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -26,12 +28,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "cat")
-public class Cat extends BaseJournalEntity {
+public class Cat extends BaseEntity {
 
     public static final String OWNER = "owner";
-    public static final String PARENT = "parent";
+    public static final String FATHER = "father";
+    public static final String MOTHER = "mother";
     public static final String OWNER_ID = OWNER + "Id";
-    public static final String PARENT_ID = PARENT + "Id";
+    public static final String FATHER_ID = FATHER + "Id";
+    public static final String MOTHER_ID = MOTHER + "Id";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,15 +60,29 @@ public class Cat extends BaseJournalEntity {
     @JoinColumn(name = "fk_owner")
     private Person owner;
 
-    @EntityByIdDeserialize(PARENT_ID)
+    @EntityByIdDeserialize(FATHER_ID)
     @JsonView({View.Retrieve.class})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_parent", updatable = false)
-    private Cat parent;
+    @JoinColumn(name = "fk_father", updatable = false)
+    private Cat father;
 
+    @EntityByIdDeserialize(MOTHER_ID)
     @JsonView({View.Retrieve.class})
-    @JsonIgnoreProperties(PARENT)
-    @OneToMany(mappedBy = Cat.PARENT, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_mother", updatable = false)
+    private Cat mother;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = Cat.MOTHER, fetch = FetchType.LAZY)
+    private Set<Cat> mKids;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = Cat.FATHER, fetch = FetchType.LAZY)
+    private Set<Cat> fKids;
+
+    @JsonIgnoreProperties({Cat.MOTHER, Cat.FATHER})
+    @JsonView({View.Retrieve.class})
+    @Transient
     private Set<Cat> kids;
 
     @JsonGetter(OWNER_ID)
@@ -73,12 +91,30 @@ public class Cat extends BaseJournalEntity {
         return owner.getId();
     }
 
-    @JsonGetter(PARENT_ID)
+    @JsonGetter(FATHER_ID)
     @JsonView({View.Retrieve.class, View.Create.class})
-    public UUID getParentId() {
-        if (parent == null) {
+    public UUID getFatherId() {
+        if (father == null) {
             return null;
         }
-        return parent.getId();
+        return father.getId();
+    }
+
+    @JsonGetter(MOTHER_ID)
+    @JsonView({View.Retrieve.class, View.Create.class})
+    public UUID getMotherId() {
+        if (mother == null) {
+            return null;
+        }
+        return mother.getId();
+    }
+
+    @PostLoad
+    private void initializeKids() {
+        if (CollectionUtils.isEmpty(mKids)) {
+            kids = fKids;
+        } else {
+            kids = mKids;
+        }
     }
 }
