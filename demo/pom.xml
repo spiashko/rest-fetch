@@ -81,17 +81,17 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.4.8</version>
+			<version>1.5.11</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.gavlyukovskiy</groupId>
 			<artifactId>datasource-proxy-spring-boot-starter</artifactId>
-			<version>1.6.2</version>
+			<version>1.7.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.jodah</groupId>
 			<artifactId>typetools</artifactId>
-			<version>0.6.2</version>
+			<version>0.6.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>

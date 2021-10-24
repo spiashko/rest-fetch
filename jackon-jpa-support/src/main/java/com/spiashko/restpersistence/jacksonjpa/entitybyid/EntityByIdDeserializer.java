@@ -59,15 +59,19 @@ public class EntityByIdDeserializer extends DelegatingDeserializer {
         for (AnnotatedField field : beanDescription.getClassInfo().fields()) {
             if (field.hasAnnotation(EntityByIdDeserialize.class)) {
                 try {
-                    EntityByIdDeserialize annotation = field.getAnnotation(EntityByIdDeserialize.class);
-                    String propertyName = annotation.value();
+                    String propertyName = field.getName();
                     TreeNode valueNode = treeNode.get(propertyName);
                     if (valueNode == null) {
                         continue;
                     }
-                    String idAsString = ((TextNode) valueNode).textValue();
+                    EntityByIdDeserialize annotation = field.getAnnotation(EntityByIdDeserialize.class);
+                    TreeNode idValue = valueNode.get(annotation.value());
+                    if (idValue == null) {
+                        continue;
+                    }
+                    String idAsString = ((TextNode) idValue).textValue();
                     UUID uuid = UUID.fromString(idAsString);
-                    Object reference = entityManager.getReference(field.getRawType(), uuid);
+                    Object reference = entityManager.find(field.getRawType(), uuid);
                     ReflectionUtils.setField(field.getAnnotated(), deserializedObject, reference);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to load entity using @EntityByIdDeserialize annotation in class "

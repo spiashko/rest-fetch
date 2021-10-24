@@ -27,11 +27,10 @@ public class Person extends BaseEntity {
     public static final String KITTENS = "kittens";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
-    @JsonView({View.Retrieve.class, View.Update.class, View.Create.class})
+    @JsonView({View.Retrieve.class, View.PersonCreate.class})
     @NotEmpty
     @Column(name = "name")
     private String name;

@@ -20,7 +20,8 @@ public class JacksonJpaConfiguration {
     @Bean
     public Hibernate5Module hibernate5Module() {
         Hibernate5Module module = new Hibernate5Module();
-//        module.enable(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
+        module.enable(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
+        module.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
         return module;
     }
 

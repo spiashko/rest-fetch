@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 import java.util.UUID;
 
@@ -39,14 +40,23 @@ public abstract class BaseEntity implements Persistable<UUID> {
         return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
     }
 
-    @JsonView({View.Retrieve.class, View.Update.class})
+    @JsonView({View.Retrieve.class, View.Create.class})
     @Override
     public abstract UUID getId();
+
+    public abstract void setId(UUID id);
 
     @JsonIgnore
     @Transient
     @Override
     public boolean isNew() {
         return null == getId();
+    }
+
+    @PrePersist
+    public void autofill() {
+        if (getId() == null) {
+            this.setId(UUID.randomUUID());
+        }
     }
 }
