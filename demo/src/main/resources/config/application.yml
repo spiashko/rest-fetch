@@ -9,14 +9,13 @@ spring:
       auto-commit: false
   jpa:
     #    show-sql: true
-    open-in-view: true
+    open-in-view: false
     properties:
       #      hibernate.generate_statistics: true
       #      hibernate.format_sql: true
       hibernate.ddl-auto: none
       hibernate.connection.provider_disables_autocommit: true
-      hibernate.temp.use_jdbc_metadata_defaults: false # to avoid `Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.`
-      hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
       hibernate.jdbc.time_zone: UTC
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
