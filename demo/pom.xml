@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.5</version>
+		<version>2.6.1</version>
 		<relativePath/>
 	</parent>
 
@@ -17,9 +17,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
-		<testcontainers.version>1.16.0</testcontainers.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<testcontainers.version>1.16.2</testcontainers.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 		<rest-persistence.version>0.0.1-SNAPSHOT</rest-persistence.version>
 	</properties>
@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.5.11</version>
+			<version>1.5.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.gavlyukovskiy</groupId>
@@ -134,7 +134,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${parent.version}</version>
+				<version>${project.parent.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
