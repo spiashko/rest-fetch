@@ -11,4 +11,6 @@
 ### thoughts:
  - JSON:API concept should be applied if we are going to include relations but if we are going to include on level of
 aggregation root then there is no need in JSON:API concept 
+ - BUT looks like it will be easier to create that JSON:API wrapper anyway
+ - 
 

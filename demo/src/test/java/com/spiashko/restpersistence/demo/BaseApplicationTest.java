@@ -20,7 +20,7 @@ import javax.persistence.PersistenceContext;
 @Testcontainers
 class BaseApplicationTest {
 
-    public static JdbcDatabaseContainer<?> dbContainer = new PostgreSQLContainer<>("postgres:11.0-alpine")
+    public static JdbcDatabaseContainer<?> dbContainer = new PostgreSQLContainer<>("postgres:14")
             .withDatabaseName("tests-db")
             .withUsername("sa")
             .withPassword("sa")
