@@ -27,7 +27,7 @@ public class JacksonJpaConfiguration {
 
     @Bean
     public SimpleModule entityByIdDeserializerModule(EntityManager entityManager) {
-        SimpleModule module = new SimpleModule();
+        SimpleModule module = new SimpleModule("entityByIdDeserializerModule");
         module.setDeserializerModifier(new BeanDeserializerModifier() {
             @Override
             public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
