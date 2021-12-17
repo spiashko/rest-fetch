@@ -76,24 +76,20 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
 
 
     private boolean shouldSerAsUsual(final Object pojo, final JsonGenerator jgen) {
+        // pass to default as it should be handled by other serializers
+        if (pojo == null || pojo instanceof HibernateProxy) {
+            return true;
+        }
+
         String pathToTest = getPathToTest(jgen);
-
-        if (pojo == null) {
-            return true;
-        }
-
-        if (pojo instanceof HibernateProxy) {
-            return true;
-        }
-
+        //it is root therefore we pass to let serialization of entity be started
         if ("".equals(pathToTest)) {
             return true;
         }
-
+        //as it is not root then some relation and as include is empty then we serialise only id
         if (rfetchPathsHolder.getIncludedPaths() == null) {
             return false;
         }
-
         return rfetchPathsHolder.getIncludedPaths().stream().anyMatch(pathToTest::equals);
     }
 

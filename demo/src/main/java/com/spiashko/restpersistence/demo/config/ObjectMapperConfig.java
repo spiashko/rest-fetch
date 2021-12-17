@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.spiashko.restpersistence.demo.rfetchmodule.RfetchPropertyFilter;
+import com.spiashko.restpersistence.demo.rfetchmodule.RfetchPropertyFilterMixin;
 import com.spiashko.restpersistence.demo.rfetchmodule.SelfReferenceResolutionSerializer;
 import com.spiashko.restpersistence.rfetch.RfetchPathsHolder;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -31,6 +34,14 @@ public class ObjectMapperConfig {
             }
         });
         return module;
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer addRfetchPropertyFilterCustomizer(RfetchPathsHolder rfetchPathsHolder) {
+        return builder -> {
+            builder.filters(new SimpleFilterProvider().addFilter("rfetchPropertyFilter", new RfetchPropertyFilter(rfetchPathsHolder)));
+            builder.mixIn(Object.class, RfetchPropertyFilterMixin.class);
+        };
     }
 
 }
