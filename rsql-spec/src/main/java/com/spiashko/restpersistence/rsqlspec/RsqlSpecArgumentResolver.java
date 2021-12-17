@@ -1,11 +1,6 @@
 package com.spiashko.restpersistence.rsqlspec;
 
 import io.github.perplexhub.rsql.RSQLJPASupport;
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Objects;
-import javax.persistence.criteria.*;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,8 +11,16 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.persistence.criteria.*;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.Objects;
+
 @RequiredArgsConstructor
 public class RsqlSpecArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final RsqlFilterHolder filterHolder;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -37,6 +40,7 @@ public class RsqlSpecArgumentResolver implements HandlerMethodArgumentResolver {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
@@ -46,6 +50,7 @@ public class RsqlSpecArgumentResolver implements HandlerMethodArgumentResolver {
         AndPathVarEq[] andPathVarEqs = rsqlSpecAnnotation.extensionFromPath();
 
         String rsqlString = webRequest.getParameter(paramName);
+        filterHolder.setFilter(rsqlString);
         Specification<Object> rsqlSpec = RSQLJPASupport.toSpecification(rsqlString, true);
 
         if (andPathVarEqs.length == 0) {
