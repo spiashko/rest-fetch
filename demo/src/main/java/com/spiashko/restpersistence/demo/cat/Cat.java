@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
+@FieldNameConstants
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,10 +28,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "cat")
 public class Cat extends BaseEntity {
-
-    public static final String OWNER = "owner";
-    public static final String FATHER = "father";
-    public static final String MOTHER = "mother";
 
     @Id
     @Column(name = "id")
@@ -48,7 +46,7 @@ public class Cat extends BaseEntity {
     @EntityByIdDeserialize
     @JsonView({View.Retrieve.class, View.CatCreate.class})
     @NotNull
-    @JsonIgnoreProperties(Person.KITTENS)
+    @JsonIgnoreProperties(Person.Fields.kittens)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_owner")
     private Person owner;
@@ -71,14 +69,14 @@ public class Cat extends BaseEntity {
     @Column(name = "gender")
     private Gender gender;
 
-    @JsonIgnoreProperties({Cat.MOTHER, Cat.FATHER})
+    @JsonIgnoreProperties({Fields.mother, Fields.father})
     @JsonView({View.Retrieve.class})
-    @OneToMany(mappedBy = Cat.MOTHER, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = Fields.mother, fetch = FetchType.LAZY)
     private Set<Cat> motherForKids;
 
-    @JsonIgnoreProperties({Cat.FATHER, Cat.MOTHER})
+    @JsonIgnoreProperties({Fields.father, Fields.mother})
     @JsonView({View.Retrieve.class})
-    @OneToMany(mappedBy = Cat.FATHER, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = Fields.father, fetch = FetchType.LAZY)
     private Set<Cat> fatherForKids;
 
 }

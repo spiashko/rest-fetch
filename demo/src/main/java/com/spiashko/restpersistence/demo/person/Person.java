@@ -10,12 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 import java.util.UUID;
 
+@FieldNameConstants
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,8 +25,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "person")
 public class Person extends BaseEntity {
-
-    public static final String KITTENS = "kittens";
 
     @Id
     @Column(name = "id")
@@ -36,8 +36,8 @@ public class Person extends BaseEntity {
     private String name;
 
     @JsonView({View.Retrieve.class})
-    @JsonIgnoreProperties(Cat.OWNER)
-    @OneToMany(mappedBy = Cat.OWNER, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(Cat.Fields.owner)
+    @OneToMany(mappedBy = Cat.Fields.owner, fetch = FetchType.LAZY)
     private Set<Cat> kittens;
 
 }

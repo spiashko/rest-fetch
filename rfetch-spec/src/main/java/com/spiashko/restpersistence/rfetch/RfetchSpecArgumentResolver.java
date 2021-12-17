@@ -22,6 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private final RfetchPathsHolder pathsHolder;
     private final List<RfetchValueCustomizer> valueCustomizers;
 
     @Override
@@ -59,7 +60,10 @@ public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver
             return null;
         }
 
-        Specification<Object> rfetchSpec = Arrays.stream(value.split(";"))
+        List<String> includedPaths = Arrays.asList(value.split(";"));
+        pathsHolder.setIncludedPaths(includedPaths);
+
+        Specification<Object> rfetchSpec = includedPaths.stream()
                 .map(this::buildSpec)
                 .reduce(Specification.where(null),
                         Specification::and);
