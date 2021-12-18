@@ -10,6 +10,7 @@ import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserializer
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
 
 import javax.persistence.EntityManager;
 
@@ -26,14 +27,15 @@ public class JacksonJpaConfiguration {
     }
 
     @Bean
-    public SimpleModule entityByIdDeserializerModule(EntityManager entityManager) {
+    public SimpleModule entityByIdDeserializerModule(EntityManager entityManager,
+                                                     ConversionService conversionService) {
         SimpleModule module = new SimpleModule("entityByIdDeserializerModule");
         module.setDeserializerModifier(new BeanDeserializerModifier() {
             @Override
             public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
                                                           BeanDescription beanDescription,
                                                           JsonDeserializer<?> originalDeserializer) {
-                return new EntityByIdDeserializer(originalDeserializer, entityManager, beanDescription);
+                return new EntityByIdDeserializer(originalDeserializer, entityManager, beanDescription, conversionService);
             }
         });
         return module;

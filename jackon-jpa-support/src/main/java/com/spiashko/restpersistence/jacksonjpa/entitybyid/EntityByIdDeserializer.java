@@ -9,29 +9,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.node.TextNode;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.util.ReflectionUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.UUID;
 
 public class EntityByIdDeserializer extends DelegatingDeserializer {
 
     private final EntityManager entityManager;
     private final BeanDescription beanDescription;
+    private final ConversionService conversionService;
 
     public EntityByIdDeserializer(JsonDeserializer<?> delegate,
                                   EntityManager entityManager,
-                                  BeanDescription beanDescription) {
+                                  BeanDescription beanDescription,
+                                  ConversionService conversionService) {
         super(delegate);
         this.entityManager = entityManager;
         this.beanDescription = beanDescription;
+        this.conversionService = conversionService;
     }
 
     @Override
     protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee) {
-        return new EntityByIdDeserializer(newDelegatee, entityManager, beanDescription);
+        return new EntityByIdDeserializer(newDelegatee, entityManager, beanDescription, conversionService);
     }
 
     @Override
@@ -70,8 +73,9 @@ public class EntityByIdDeserializer extends DelegatingDeserializer {
                         continue;
                     }
                     String idAsString = ((TextNode) idValue).textValue();
-                    UUID uuid = UUID.fromString(idAsString);
-                    Object reference = entityManager.find(field.getRawType(), uuid);
+                    Class<?> idClass = annotation.idClass();
+                    Object id = conversionService.convert(idAsString, idClass);
+                    Object reference = entityManager.find(field.getRawType(), id);
                     ReflectionUtils.setField(field.getAnnotated(), deserializedObject, reference);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to load entity using @EntityByIdDeserialize annotation in class "

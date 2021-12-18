@@ -43,7 +43,7 @@ public class Cat extends BaseEntity {
     @Column(name = "dob")
     private LocalDate dob;
 
-    @EntityByIdDeserialize
+    @EntityByIdDeserialize(idClass = UUID.class)
     @JsonView({View.Retrieve.class, View.CatCreate.class})
     @NotNull
     @JsonIgnoreProperties(Person.Fields.kittens)
@@ -51,13 +51,13 @@ public class Cat extends BaseEntity {
     @JoinColumn(name = "fk_owner")
     private Person owner;
 
-    @EntityByIdDeserialize
+    @EntityByIdDeserialize(idClass = UUID.class)
     @JsonView({View.Retrieve.class, View.CatCreate.class})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_father", updatable = false)
     private Cat father;
 
-    @EntityByIdDeserialize
+    @EntityByIdDeserialize(idClass = UUID.class)
     @JsonView({View.Retrieve.class, View.CatCreate.class})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_mother", updatable = false)

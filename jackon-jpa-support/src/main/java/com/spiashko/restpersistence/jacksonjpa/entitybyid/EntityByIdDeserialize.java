@@ -11,4 +11,6 @@ public @interface EntityByIdDeserialize {
 
     String value() default "id";
 
+    Class<?> idClass() default String.class;
+
 }
