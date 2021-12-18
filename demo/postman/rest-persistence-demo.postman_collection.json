@@ -59,7 +59,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/persons?include=kittens&filter=name==*1",
+							"raw": "{{baseUrl}}/persons?include=kittens&filter=kittens.name==scooter",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -73,7 +73,7 @@
 								},
 								{
 									"key": "filter",
-									"value": "name==*1"
+									"value": "kittens.name==scooter"
 								}
 							]
 						}
@@ -165,7 +165,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/persons?filter=name==*1",
+							"raw": "{{baseUrl}}/persons?filter=name==bob",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -175,7 +175,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "name==*1"
+									"value": "name==bob"
 								}
 							]
 						}
@@ -324,7 +324,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?filter=owner.name==*2&include=owner;parent",
+							"raw": "{{baseUrl}}/cats?filter=owner.name==bob&include=owner;father",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -334,11 +334,11 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "owner.name==*2"
+									"value": "owner.name==bob"
 								},
 								{
 									"key": "include",
-									"value": "owner;parent"
+									"value": "owner;father"
 								}
 							]
 						}
@@ -379,7 +379,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?filter=owner.name==*2",
+							"raw": "{{baseUrl}}/cats?filter=name==scooter",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -389,7 +389,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "owner.name==*2"
+									"value": "name==scooter"
 								}
 							]
 						}
@@ -430,7 +430,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?include=owner;parent",
+							"raw": "{{baseUrl}}/cats?include=owner;mother;father",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -440,7 +440,7 @@
 							"query": [
 								{
 									"key": "include",
-									"value": "owner;parent"
+									"value": "owner;mother;father"
 								}
 							]
 						}
@@ -487,7 +487,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"dob\": \"1960-09-24\",\n    \"name\": \"consequat deserunt\",\n    \"parentId\": \"aaf0cf0a-6688-7cd7-b8aa-a23f85104f33\",\n    \"ownerId\": \"urn:uuid:c4c86dc4-80e7-30f0-5414-8ff165850241\"\n}"
+							"raw": "{\n  \"name\": \"string\",\n  \"dob\": \"2021-10-24\",\n  \"owner\": {\n    \"id\": \"5ced6a48-f31c-45d3-af07-95dbc722614a\"\n  },\n  \"mother\": {\n    \"id\": \"6d23e2cc-6fad-4895-9851-d31e1eeffb89\"\n  },\n  \"father\": {\n    \"id\": \"f3814ab0-71eb-4c54-a27e-c78161110752\"\n  },\n  \"gender\": \"FEMALE\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/cats",
@@ -534,15 +534,6 @@
 					]
 				}
 			]
-		},
-		{
-			"name": "New Request",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
-			},
-			"response": []
 		}
 	],
 	"event": [
