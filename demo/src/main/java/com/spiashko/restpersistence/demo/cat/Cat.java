@@ -44,7 +44,7 @@ public class Cat extends BaseEntity {
     private LocalDate dob;
 
     @EntityByIdDeserialize(idClass = UUID.class)
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.CatCreate.class})
     @NotNull
     @JsonIgnoreProperties(Person.Fields.kittens)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

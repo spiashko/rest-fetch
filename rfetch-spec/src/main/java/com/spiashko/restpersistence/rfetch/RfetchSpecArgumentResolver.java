@@ -63,7 +63,7 @@ public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver
         }
 
         for (RfetchValueValidator validator : valueValidators) {
-            validator.validate(includedPaths);
+            validator.validate(includedPaths, parameter);
         }
 
         pathsHolder.setIncludedPaths(includedPaths);

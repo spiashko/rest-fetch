@@ -5,6 +5,7 @@ import com.spiashko.restpersistence.rfetch.RfetchPathsHolder;
 import com.spiashko.restpersistence.rfetch.RfetchSpecArgumentResolver;
 import com.spiashko.restpersistence.rfetch.RfetchValueCustomizer;
 import com.spiashko.restpersistence.rfetch.RfetchValueValidator;
+import com.spiashko.restpersistence.rfetch.security.RfetchJsonViewSecurityValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
