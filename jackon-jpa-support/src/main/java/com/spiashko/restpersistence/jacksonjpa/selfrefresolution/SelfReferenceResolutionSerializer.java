@@ -48,10 +48,12 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
             defaultSerializer.serialize(value, gen, serializers);
         } else { // ser only id
             Class<?> beanClass = beanDescription.getBeanClass();
+            //TODO: remove hardcoded method
             Method getId = ReflectionUtils.findMethod(beanClass, "getId");
             Object id = Objects.requireNonNull(getId).invoke(value);
 
             HashMap<String, Object> map = new HashMap<>();
+            //TODO: remove hardcoded id property name
             map.put("id", id);
             mapSerializer.serialize(map, gen, serializers);
         }
