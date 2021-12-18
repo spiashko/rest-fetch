@@ -1,7 +1,7 @@
 
 
 ### TODO
-- integrate with security (make it depended on JsonView)
+- integrate with security (make it depended on JsonView) to forbidden filter and include relations which are not to meant to be presented
 - try to apply JSON:API concept
 - add swagger integration
 
