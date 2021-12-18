@@ -1,4 +1,4 @@
-package com.spiashko.restpersistence.demo.rfetchmodule;
+package com.spiashko.restpersistence.jacksonjpa.selfrefresolution;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonStreamContext;

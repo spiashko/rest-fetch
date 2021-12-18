@@ -1,13 +1,19 @@
 package com.spiashko.restpersistence.jacksonjpa.autoconfigure;
 
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserializer;
+import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilter;
+import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilterMixin;
+import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionSerializer;
+import com.spiashko.restpersistence.rfetch.RfetchPathsHolder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
@@ -27,6 +33,11 @@ public class JacksonJpaConfiguration {
     }
 
     @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> builder.serializationInclusion(JsonInclude.Include.NON_DEFAULT);
+    }
+
+    @Bean
     public SimpleModule entityByIdDeserializerModule(EntityManager entityManager,
                                                      ConversionService conversionService) {
         SimpleModule module = new SimpleModule("entityByIdDeserializerModule");
@@ -41,4 +52,24 @@ public class JacksonJpaConfiguration {
         return module;
     }
 
+    @Bean
+    public SimpleModule selfReferenceResolutionSerializerModule(RfetchPathsHolder rfetchPathsHolder) {
+        SimpleModule module = new SimpleModule("selfReferenceResolverSerializerModule");
+        module.setSerializerModifier(new BeanSerializerModifier() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription beanDesc, JsonSerializer<?> originalSerializer) {
+                return new SelfReferenceResolutionSerializer(rfetchPathsHolder, (JsonSerializer<Object>) originalSerializer, beanDesc);
+            }
+        });
+        return module;
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer addRfetchPropertyFilterCustomizer(RfetchPathsHolder rfetchPathsHolder) {
+        return builder -> {
+            builder.filters(new SimpleFilterProvider().addFilter("selfReferenceResolutionFilter", new SelfReferenceResolutionFilter(rfetchPathsHolder)));
+            builder.mixIn(Object.class, SelfReferenceResolutionFilterMixin.class);
+        };
+    }
 }

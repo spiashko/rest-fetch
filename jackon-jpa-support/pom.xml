@@ -14,6 +14,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <rest-persistence.version>0.0.1-SNAPSHOT</rest-persistence.version>
     </properties>
 
     <dependencies>
@@ -28,6 +29,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.spiashko.rest-persistence</groupId>
+            <artifactId>rfetch-spec-spring-boot-starter</artifactId>
+            <version>${rest-persistence.version}</version>
         </dependency>
     </dependencies>
 

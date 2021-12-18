@@ -1,4 +1,4 @@
-package com.spiashko.restpersistence.demo.rfetchmodule;
+package com.spiashko.restpersistence.jacksonjpa.selfrefresolution;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonStreamContext;
@@ -18,7 +18,7 @@ import java.lang.annotation.Annotation;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RfetchPropertyFilter extends SimpleBeanPropertyFilter {
+public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Annotation>[] TO_MANY_ANNOTATIONS = (Class<? extends Annotation>[])

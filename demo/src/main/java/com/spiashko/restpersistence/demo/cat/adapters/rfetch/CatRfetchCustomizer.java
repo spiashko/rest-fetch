@@ -13,7 +13,7 @@ public class CatRfetchCustomizer implements RfetchValueCustomizer {
             return null;
         }
 
-        val newValue = value.replace("kids", Cat_.FATHER_FOR_KIDS + ";" + Cat_.MOTHER_FOR_KIDS);
+        val newValue = value.replaceAll("([^;.]*)(\\.?)kids", "$1$2" + Cat_.FATHER_FOR_KIDS + ";" + "$1$2"  + Cat_.MOTHER_FOR_KIDS);
 
         return newValue;
     }
