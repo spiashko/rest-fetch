@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.Entity;
@@ -89,7 +90,7 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
             return true;
         }
         //as it is not root then some relation and as include is empty then we serialise only id
-        if (rfetchPathsHolder.getIncludedPaths() == null) {
+        if (CollectionUtils.isEmpty(rfetchPathsHolder.getIncludedPaths())) {
             return false;
         }
         return rfetchPathsHolder.getIncludedPaths().stream().anyMatch(pathToTest::equals);

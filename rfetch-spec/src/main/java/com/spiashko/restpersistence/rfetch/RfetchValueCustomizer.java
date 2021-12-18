@@ -1,7 +1,9 @@
 package com.spiashko.restpersistence.rfetch;
 
+import java.util.List;
+
 public interface RfetchValueCustomizer {
 
-    String customize(String value);
+    List<String> customize(final List<String> includedPaths);
 
 }

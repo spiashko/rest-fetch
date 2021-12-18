@@ -4,17 +4,41 @@ import com.spiashko.restpersistence.demo.cat.Cat_;
 import com.spiashko.restpersistence.rfetch.RfetchValueCustomizer;
 import lombok.val;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CatRfetchCustomizer implements RfetchValueCustomizer {
+
+    private static final String KIDS = "^([^\\.]*)(\\.?)kids(\\.?)([^\\.]*)$";
+    private static final Pattern KIDS_PATTERN = Pattern.compile(KIDS);
+
     @Override
-    public String customize(String value) {
-        if (value == null) {
-            return null;
+    public List<String> customize(final List<String> includedPaths) {
+        if (CollectionUtils.isEmpty(includedPaths)) {
+            return new ArrayList<>();
         }
 
-        val newValue = value.replaceAll("([^;.]*)(\\.?)kids", "$1$2" + Cat_.FATHER_FOR_KIDS + ";" + "$1$2"  + Cat_.MOTHER_FOR_KIDS);
+        val newIncludedPaths = new ArrayList<String>();
 
-        return newValue;
+        for (String includedPath : includedPaths) {
+            Matcher matcher = KIDS_PATTERN.matcher(includedPath);
+            if (matcher.matches()) {
+                newIncludedPaths.add(getReplacement(matcher, Cat_.FATHER_FOR_KIDS));
+                newIncludedPaths.add(getReplacement(matcher, Cat_.MOTHER_FOR_KIDS));
+            } else {
+                newIncludedPaths.add(includedPath);
+            }
+
+        }
+        return newIncludedPaths;
+    }
+
+    private String getReplacement(Matcher matcher, String s) {
+        return matcher.group(1) + matcher.group(2) + s + matcher.group(3) + matcher.group(4);
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver
 
     private final RfetchPathsHolder pathsHolder;
     private final List<RfetchValueCustomizer> valueCustomizers;
+    private final List<RfetchValueValidator> valueValidators;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -52,15 +54,18 @@ public class RfetchSpecArgumentResolver implements HandlerMethodArgumentResolver
 
         String value = webRequest.getParameter(paramName);
 
+        List<String> includedPaths = value == null ?
+                new ArrayList<>() :
+                Arrays.asList(value.split(";"));
+
         for (RfetchValueCustomizer customizer : valueCustomizers) {
-            value = customizer.customize(value);
+            includedPaths = customizer.customize(includedPaths);
         }
 
-        if (value == null) {
-            return null;
+        for (RfetchValueValidator validator : valueValidators) {
+            validator.validate(includedPaths);
         }
 
-        List<String> includedPaths = Arrays.asList(value.split(";"));
         pathsHolder.setIncludedPaths(includedPaths);
 
         Specification<Object> rfetchSpec = includedPaths.stream()
