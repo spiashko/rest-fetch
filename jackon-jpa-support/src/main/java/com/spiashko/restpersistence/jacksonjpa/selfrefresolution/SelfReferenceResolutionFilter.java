@@ -1,7 +1,6 @@
 package com.spiashko.restpersistence.jacksonjpa.selfrefresolution;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonStreamContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -21,40 +20,13 @@ import java.lang.annotation.Annotation;
 public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
 
     @SuppressWarnings("unchecked")
-    private static Class<? extends Annotation>[] TO_MANY_ANNOTATIONS = (Class<? extends Annotation>[])
+    private static final Class<? extends Annotation>[] TO_MANY_ANNOTATIONS = (Class<? extends Annotation>[])
             new Class<?>[]{
                     ManyToMany.class,
                     OneToMany.class
             };
 
     private final RfetchPathsHolder rfetchPathsHolder;
-
-
-    /**
-     * Gets the path to test.
-     *
-     * @param writer the writer
-     * @param jgen   the jgen
-     * @return the path to test
-     */
-    private String getPathToTest(final PropertyWriter writer, final JsonGenerator jgen) {
-        StringBuilder nestedPath = new StringBuilder();
-        nestedPath.append(writer.getName());
-        JsonStreamContext sc = jgen.getOutputContext();
-        if (sc != null) {
-            sc = sc.getParent();
-        }
-        while (sc != null) {
-            if (sc.getCurrentName() != null) {
-                if (nestedPath.length() > 0) {
-                    nestedPath.insert(0, ".");
-                }
-                nestedPath.insert(0, sc.getCurrentName());
-            }
-            sc = sc.getParent();
-        }
-        return nestedPath.toString();
-    }
 
     /*
      * (non-Javadoc)
@@ -80,15 +52,8 @@ public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
         throw new UnsupportedOperationException("Cannot call include without JsonGenerator");
     }
 
-    /**
-     * Include.
-     *
-     * @param writer the writer
-     * @param jgen   the jgen
-     * @return true, if successful
-     */
     protected boolean shouldSer(final PropertyWriter writer, final JsonGenerator jgen) {
-        String pathToTest = getPathToTest(writer, jgen);
+        String pathToTest = SelfReferenceResolutionUtils.getPathToTest(writer, jgen);
 
         AnnotatedMember member = writer.getMember();
 
@@ -105,7 +70,8 @@ public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
             return false;
         }
 
-        return rfetchPathsHolder.getIncludedPaths().stream().anyMatch(pathToTest::equals);
+        return rfetchPathsHolder.getIncludedWithSubPaths().stream()
+                .anyMatch(pathToTest::equals);
     }
 
     @Override

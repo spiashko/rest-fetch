@@ -7,6 +7,7 @@ import org.springframework.core.MethodParameter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,12 @@ public class RfetchJsonViewSecurityValidator implements RfetchValueValidator {
             Field endField = null;
             for (String pathPart : pathParts) {
                 endField = currentClass.getDeclaredField(pathPart);
-                currentClass = endField.getType();
+                Type candidate = endField.getGenericType();
+                if (candidate instanceof ParameterizedType) {
+                    currentClass = (Class<?>) ((ParameterizedType) candidate).getActualTypeArguments()[0];
+                } else {
+                    currentClass = (Class<?>) candidate;
+                }
             }
 
             List<Class<?>> fieldJsonViews = Optional.ofNullable(endField)
@@ -51,7 +57,5 @@ public class RfetchJsonViewSecurityValidator implements RfetchValueValidator {
             }
 
         }
-
-        System.out.println();
     }
 }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserializer;
+import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionConstants;
 import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilter;
 import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilterMixin;
 import com.spiashko.restpersistence.jacksonjpa.selfrefresolution.SelfReferenceResolutionSerializer;
@@ -46,7 +47,8 @@ public class JacksonJpaConfiguration {
             public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
                                                           BeanDescription beanDescription,
                                                           JsonDeserializer<?> originalDeserializer) {
-                return new EntityByIdDeserializer(originalDeserializer, entityManager, beanDescription, conversionService);
+                return new EntityByIdDeserializer(originalDeserializer, entityManager, beanDescription,
+                        conversionService);
             }
         });
         return module;
@@ -59,7 +61,8 @@ public class JacksonJpaConfiguration {
             @SuppressWarnings("unchecked")
             @Override
             public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription beanDesc, JsonSerializer<?> originalSerializer) {
-                return new SelfReferenceResolutionSerializer(rfetchPathsHolder, (JsonSerializer<Object>) originalSerializer, beanDesc);
+                return new SelfReferenceResolutionSerializer(rfetchPathsHolder,
+                        (JsonSerializer<Object>) originalSerializer, beanDesc);
             }
         });
         return module;
@@ -68,7 +71,9 @@ public class JacksonJpaConfiguration {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer addRfetchPropertyFilterCustomizer(RfetchPathsHolder rfetchPathsHolder) {
         return builder -> {
-            builder.filters(new SimpleFilterProvider().addFilter("selfReferenceResolutionFilter", new SelfReferenceResolutionFilter(rfetchPathsHolder)));
+            builder.filters(new SimpleFilterProvider()
+                    .addFilter(SelfReferenceResolutionConstants.SELF_REFERENCE_RESOLUTION_FILTER,
+                            new SelfReferenceResolutionFilter(rfetchPathsHolder)));
             builder.mixIn(Object.class, SelfReferenceResolutionFilterMixin.class);
         };
     }

@@ -1,7 +1,6 @@
 package com.spiashko.restpersistence.jacksonjpa.selfrefresolution;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonStreamContext;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.fasterxml.jackson.databind.ser.ResolvableSerializer;
@@ -84,7 +83,7 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
             return true;
         }
 
-        String pathToTest = getPathToTest(jgen);
+        String pathToTest = SelfReferenceResolutionUtils.getPathToTest(jgen);
         //it is root therefore we pass to let serialization of entity be started
         if ("".equals(pathToTest)) {
             return true;
@@ -93,22 +92,8 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
         if (CollectionUtils.isEmpty(rfetchPathsHolder.getIncludedPaths())) {
             return false;
         }
-        return rfetchPathsHolder.getIncludedPaths().stream().anyMatch(pathToTest::equals);
+        return rfetchPathsHolder.getIncludedWithSubPaths().stream()
+                .anyMatch(pathToTest::equals);
     }
 
-
-    private String getPathToTest(final JsonGenerator jgen) {
-        StringBuilder nestedPath = new StringBuilder();
-        JsonStreamContext sc = jgen.getOutputContext();
-        while (sc != null) {
-            if (sc.getCurrentName() != null) {
-                if (nestedPath.length() > 0) {
-                    nestedPath.insert(0, ".");
-                }
-                nestedPath.insert(0, sc.getCurrentName());
-            }
-            sc = sc.getParent();
-        }
-        return nestedPath.toString();
-    }
 }

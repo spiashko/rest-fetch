@@ -114,7 +114,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/persons?include=kittens",
+							"raw": "{{baseUrl}}/persons?include=kittens.kids",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -124,7 +124,7 @@
 							"query": [
 								{
 									"key": "include",
-									"value": "kittens"
+									"value": "kittens.kids"
 								}
 							]
 						}
@@ -324,7 +324,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?filter=owner.name==bob&include=owner;father",
+							"raw": "{{baseUrl}}/cats?filter=owner.name==bob&include=father",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -338,7 +338,7 @@
 								},
 								{
 									"key": "include",
-									"value": "owner;father"
+									"value": "father"
 								}
 							]
 						}
@@ -430,7 +430,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?include=owner;mother;father",
+							"raw": "{{baseUrl}}/cats?include=father.kids",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -440,7 +440,7 @@
 							"query": [
 								{
 									"key": "include",
-									"value": "owner;mother;father"
+									"value": "father.kids"
 								}
 							]
 						}
