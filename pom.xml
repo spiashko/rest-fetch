@@ -15,6 +15,7 @@
         <module>rsql-annotation</module>
         <module>jackon-jpa-support</module>
         <module>rfetch-parser</module>
+        <module>security-support</module>
     </modules>
 
     <properties>

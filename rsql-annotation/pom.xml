@@ -30,6 +30,11 @@
             <artifactId>rsql-jpa-spring-boot-starter</artifactId>
             <version>5.0.18</version>
         </dependency>
+        <dependency>
+            <groupId>com.spiashko.rest-persistence</groupId>
+            <artifactId>security-support</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

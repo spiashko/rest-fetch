@@ -20,11 +20,11 @@ import java.util.List;
 public class RfetchSpecConfiguration implements WebMvcConfigurer {
 
     private final List<RfetchValueCustomizer> valueCustomizers;
-    private final List<RfetchValueInterceptor> valueValidators;
+    private final List<RfetchValueInterceptor> valueInterceptors;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new RfetchSpecArgumentResolver(rfetchSupport(), valueCustomizers, valueValidators));
+        argumentResolvers.add(new RfetchSpecArgumentResolver(rfetchSupport(), valueCustomizers, valueInterceptors));
     }
 
     @Bean

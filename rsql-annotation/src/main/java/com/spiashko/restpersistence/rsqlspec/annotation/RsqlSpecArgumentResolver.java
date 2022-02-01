@@ -1,10 +1,12 @@
 package com.spiashko.restpersistence.rsqlspec.annotation;
 
+import io.github.perplexhub.rsql.RSQLCommonSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyPath;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -14,11 +16,15 @@ import org.springframework.web.servlet.HandlerMapping;
 import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 public class RsqlSpecArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final List<RsqlValueCustomizer> valueCustomizers;
+    private final List<RsqlValueInterceptor> valueInterceptors;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -48,6 +54,15 @@ public class RsqlSpecArgumentResolver implements HandlerMethodArgumentResolver {
         AndPathVarEq[] andPathVarEqs = rsqlSpecAnnotation.extensionFromPath();
 
         String rsqlString = webRequest.getParameter(paramName);
+
+        for (RsqlValueCustomizer customizer : valueCustomizers) {
+            rsqlString = customizer.customize(rsqlString);
+        }
+
+        for (RsqlValueInterceptor interceptor : valueInterceptors) {
+            interceptor.intercept(rsqlString, parameter);
+        }
+
         Specification<Object> rsqlSpec = RSQLJPASupport.toSpecification(rsqlString, true);
 
         if (andPathVarEqs.length == 0) {

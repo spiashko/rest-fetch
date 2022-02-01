@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 
+//TODO: need to check how it works with PUT operations
 public class EntityByIdDeserializer extends DelegatingDeserializer {
 
     private final transient EntityManager entityManager;

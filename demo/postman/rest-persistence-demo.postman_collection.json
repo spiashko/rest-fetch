@@ -266,7 +266,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cats?filter=owner.name==bob&include=father",
+							"raw": "{{baseUrl}}/cats?filter=name==scooter&include=father",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -276,7 +276,7 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "owner.name==bob"
+									"value": "name==scooter"
 								},
 								{
 									"key": "include",

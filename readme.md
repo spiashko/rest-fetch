@@ -49,16 +49,18 @@ to retrieve, and it will be always only one sql query to database regardless of 
 
 **security:**
 
-With help of `RfetchJsonViewSecurityInterceptor` defined as bean we may add security which will basically depends on
-JsonView so if relation is not meant to be present but it is present in `include` param then this interceptor will throw
-an Exception.
+With help of `JsonViewSecurityInterceptor` defined as bean we may add security which will basically depends on JsonView
+so if relation is not meant to be present, but it is present in `include` or `filter` param then this interceptor will
+throw an Exception.
 
 #### TODO
 
-- integrate with security (make it depended on JsonView) to forbidden filter relations which are not to meant to be
-  presented
 - try to apply JSON:API concept
 - add swagger integration
+- calculated fields in jpa
+- services like repositories
+- cursor pagination
+- tests
 
 #### implementation thoughts:
 

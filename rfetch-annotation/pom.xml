@@ -30,6 +30,11 @@
             <artifactId>rfetch-parser</artifactId>
             <version>${parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.spiashko.rest-persistence</groupId>
+            <artifactId>security-support</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
