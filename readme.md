@@ -55,6 +55,7 @@ throw an Exception.
 
 #### TODO
 
+- need to resolve Cartesian Product problem
 - try to apply JSON:API concept
 - add swagger integration
 - calculated fields in jpa
