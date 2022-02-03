@@ -38,3 +38,4 @@ springdoc:
   swagger-ui:
     showCommonExtensions: true
     showExtensions: true
+

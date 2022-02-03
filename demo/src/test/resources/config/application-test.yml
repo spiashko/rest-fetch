@@ -2,5 +2,3 @@ spring:
   jpa:
     properties:
       hibernate.ddl-auto: validate
-
-

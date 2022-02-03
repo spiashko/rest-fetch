@@ -10,7 +10,7 @@ extendable solution.
 - `mvn clean install`
 - `cd demo`
 - `docker compose up -d`
-- `mvn spring-boot:run`
+- `mvn spring-boot:run -Dspring-boot.run.profiles=demo`
 
 in separate terminal
 

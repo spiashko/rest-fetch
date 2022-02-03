@@ -1,0 +1,3 @@
+spring:
+  liquibase:
+    change-log: classpath:config/demo-liquibase/demo-master.xml

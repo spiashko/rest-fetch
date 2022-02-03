@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <databaseChangeLog
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
@@ -6,40 +5,18 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="siarhei.piashko" id="changelog-001-person">
-        <!--postgres sql highlight-->
-        <sql>
-            create table person
-            (
-                id   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-                name TEXT UNIQUE NOT NULL
-            );
-        </sql>
+        <sqlFile path="config/liquibase/sql/changelog-001/changelog-001-person.sql" relativeToChangelogFile="false"/>
         <rollback>
-            drop table person;
+            <sqlFile path="config/liquibase/sql/changelog-001/changelog-001-person-rollback.sql"
+                     relativeToChangelogFile="false"/>
         </rollback>
     </changeSet>
 
     <changeSet author="siarhei.piashko" id="changelog-001-cat">
-        <!--postgres sql highlight-->
-        <sql>
-            create table cat
-            (
-                id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-                name      TEXT UNIQUE                 NOT NULL,
-                dob       DATE                        NOT NULL,
-
-                gender    TEXT                        NOT NULL,
-
-                fk_owner  UUID REFERENCES person (id) NOT NULL,
-
-                fk_father UUID REFERENCES cat (id),
-                fk_mother UUID REFERENCES cat (id)
-            );
-        </sql>
+        <sqlFile path="config/liquibase/sql/changelog-001/changelog-001-cat.sql" relativeToChangelogFile="false"/>
         <rollback>
-            drop table cat;
+            <sqlFile path="config/liquibase/sql/changelog-001/changelog-001-cat-rollback.sql"
+                     relativeToChangelogFile="false"/>
         </rollback>
     </changeSet>
 

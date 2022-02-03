@@ -1,570 +1,570 @@
 {
-	"info": {
-		"_postman_id": "b4dc124c-2d38-4657-87d9-454563a43341",
-		"name": "rest-persistence-demo",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "persons",
-			"item": [
-				{
-					"name": "find All",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/persons",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"persons"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/persons",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"persons"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All both",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/persons?include=kittens&filter=kittens.name==scooter",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"persons"
-							],
-							"query": [
-								{
-									"key": "include",
-									"value": "kittens"
-								},
-								{
-									"key": "filter",
-									"value": "kittens.name==scooter"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/persons",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"persons"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All include",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/persons?include=kittens.kids",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"persons"
-							],
-							"query": [
-								{
-									"key": "include",
-									"value": "kittens.kids"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/persons",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"persons"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All filter",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/persons?filter=name==bob",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"persons"
-							],
-							"query": [
-								{
-									"key": "filter",
-									"value": "name==bob"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/persons",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"persons"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "cats",
-			"item": [
-				{
-					"name": "find All",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/cats",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"cats"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/cats",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"cats"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All both",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/cats?filter=name==scooter&include=father",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"cats"
-							],
-							"query": [
-								{
-									"key": "filter",
-									"value": "name==scooter"
-								},
-								{
-									"key": "include",
-									"value": "father"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/cats",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"cats"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All filter",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/cats?filter=name==scooter",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"cats"
-							],
-							"query": [
-								{
-									"key": "filter",
-									"value": "name==scooter"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/cats",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"cats"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "find All include",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/cats?include=father.kids;mother",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"cats"
-							],
-							"query": [
-								{
-									"key": "include",
-									"value": "father.kids;mother"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/cats",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"cats"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "create",
-			"item": [
-				{
-					"name": "create",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"some-person-name\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/persons",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"persons"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"veniam dolore deserunt occaecat\"\n}"
-								},
-								"url": {
-									"raw": "{{baseUrl}}/persons",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"persons"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				},
-				{
-					"name": "create",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"some-cat-name\",\n  \"dob\": \"2021-10-24\",\n  \"owner\": {\n    \"id\": \"5ced6a48-f31c-45d3-af07-95dbc722614a\"\n  },\n  \"mother\": {\n    \"id\": \"6d23e2cc-6fad-4895-9851-d31e1eeffb89\"\n  },\n  \"father\": {\n    \"id\": \"f3814ab0-71eb-4c54-a27e-c78161110752\"\n  },\n  \"gender\": \"FEMALE\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/cats",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"cats"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "OK",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"dob\": \"1960-09-24\",\n    \"name\": \"consequat deserunt\",\n    \"parentId\": \"aaf0cf0a-6688-7cd7-b8aa-a23f85104f33\",\n    \"ownerId\": \"urn:uuid:c4c86dc4-80e7-30f0-5414-8ff165850241\"\n}"
-								},
-								"url": {
-									"raw": "{{baseUrl}}/cats",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"cats"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "*/*"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						}
-					]
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:8080"
-		}
-	]
+  "info": {
+    "_postman_id": "b4dc124c-2d38-4657-87d9-454563a43341",
+    "name": "rest-persistence-demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "persons",
+      "item": [
+        {
+          "name": "find All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/persons",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "persons"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All both",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?include=kittens&filter=kittens.name==scooter",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "kittens"
+                },
+                {
+                  "key": "filter",
+                  "value": "kittens.name==scooter"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/persons",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "persons"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All include",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?include=kittens.kids",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "kittens.kids"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/persons",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "persons"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?filter=name==bob",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "name==bob"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/persons",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "persons"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cats",
+      "item": [
+        {
+          "name": "find All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cats"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "cats"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All both",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cats?filter=name==scooter&include=father",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cats"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "name==scooter"
+                },
+                {
+                  "key": "include",
+                  "value": "father"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "cats"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cats?filter=name==scooter",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cats"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "name==scooter"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "cats"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "find All include",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cats?include=father.kids;mother",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cats"
+              ],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "father.kids;mother"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/cats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "cats"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "create",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"some-person-name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"veniam dolore deserunt occaecat\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/persons",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "persons"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"some-cat-name\",\n  \"dob\": \"2021-10-24\",\n  \"owner\": {\n    \"id\": \"5ced6a48-f31c-45d3-af07-95dbc722614a\"\n  },\n  \"mother\": {\n    \"id\": \"6d23e2cc-6fad-4895-9851-d31e1eeffb89\"\n  },\n  \"father\": {\n    \"id\": \"f3814ab0-71eb-4c54-a27e-c78161110752\"\n  },\n  \"gender\": \"FEMALE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cats"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"dob\": \"1960-09-24\",\n    \"name\": \"consequat deserunt\",\n    \"parentId\": \"aaf0cf0a-6688-7cd7-b8aa-a23f85104f33\",\n    \"ownerId\": \"urn:uuid:c4c86dc4-80e7-30f0-5414-8ff165850241\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/cats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "cats"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
 }

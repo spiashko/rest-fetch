@@ -1,24 +1,25 @@
 package com.spiashko.restpersistence.demo;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.restassured.RestAssured;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import javax.annotation.PostConstruct;
 
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class BaseApplicationTest {
+@Sql(scripts = {"classpath:sql-test-data/base-test-data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+public class BaseApplicationTest {
+
+    private final static String BASE_URI = "http://localhost";
 
     public static JdbcDatabaseContainer<?> dbContainer = new PostgreSQLContainer<>("postgres:14")
             .withDatabaseName("tests-db")
@@ -33,10 +34,8 @@ class BaseApplicationTest {
         dbContainer.start();
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-    @Autowired
-    private TransactionTemplate transactionTemplate;
+    @LocalServerPort
+    private int port;
 
     @DynamicPropertySource
     static void datasourceProperties(DynamicPropertyRegistry registry) {
@@ -45,9 +44,10 @@ class BaseApplicationTest {
         registry.add("spring.datasource.password", dbContainer::getPassword);
     }
 
-    @BeforeEach
-    public void beforeTest() {
-        CleanDbUtil.cleanStore(transactionTemplate, entityManager);
+    @PostConstruct
+    public void configureRestAssured() {
+        RestAssured.baseURI = BASE_URI;
+        RestAssured.port = port;
     }
 
 }
