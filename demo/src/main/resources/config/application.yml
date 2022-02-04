@@ -8,20 +8,20 @@ spring:
       poolName: Hikari
       auto-commit: false
   jpa:
-    #    show-sql: true
+    #show-sql: true
     open-in-view: false
     properties:
-      #      hibernate.generate_statistics: true
-      #      hibernate.format_sql: true
+      #hibernate.generate_statistics: true
+      #hibernate.format_sql: true
       hibernate.ddl-auto: none
       hibernate.connection.provider_disables_autocommit: true
       hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
       hibernate.jdbc.time_zone: UTC
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
-      #      javax.persistence.schema-generation.create-source: metadata
-      #      javax.persistence.schema-generation.scripts.action: create
-      #      javax.persistence.schema-generation.scripts.create-target: create.sql
+      #javax.persistence.schema-generation.create-source: metadata
+      #javax.persistence.schema-generation.scripts.action: create
+      #javax.persistence.schema-generation.scripts.create-target: create.sql
   liquibase:
     change-log: classpath:config/liquibase/master.xml
   mvc:

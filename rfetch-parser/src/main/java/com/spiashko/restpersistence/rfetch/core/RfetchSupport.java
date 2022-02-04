@@ -8,15 +8,22 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RfetchSupport {
 
-    public Specification<Object> toSpecification(List<String> includedPaths) {
-        Specification<Object> rfetchSpec = includedPaths.stream()
+    public List<Specification<Object>> toSpecificationList(List<String> includedPaths) {
+        List<Specification<Object>> rfetchSpecs = includedPaths.stream()
                 .map(this::buildSpec)
+                .collect(Collectors.toList());
+        return rfetchSpecs;
+    }
+
+    public Specification<Object> toSpecification(List<String> includedPaths) {
+        Specification<Object> reducedSpec = toSpecificationList(includedPaths).stream()
                 .reduce(Specification.where(null),
                         Specification::and);
-        return rfetchSpec;
+        return reducedSpec;
     }
 
     private Specification<Object> buildSpec(String attributePath) {
