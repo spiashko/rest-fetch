@@ -75,3 +75,7 @@ throw an Exception.
   write endpoint in our usual way with dto and other boring things
 
 
+
+
+Extend from SimpleJPARepository
+https://www.baeldung.com/spring-data-jpa-method-in-all-repositories
