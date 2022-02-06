@@ -21,6 +21,7 @@
         <module>demo</module>
         <module>jackon-jpa-support</module>
         <module>fetch-support</module>
+        <module>security-support</module>
     </modules>
 
     <properties>

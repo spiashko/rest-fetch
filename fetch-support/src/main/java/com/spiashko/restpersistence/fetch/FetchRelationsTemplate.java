@@ -1,25 +1,25 @@
 package com.spiashko.restpersistence.fetch;
 
-import com.spiashko.restpersistence.spec.SpecSupport;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.mapping.PropertyPath;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.criteria.FetchParent;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-
+@SuppressWarnings("unchecked")
 @Slf4j
 @UtilityClass
 public class FetchRelationsTemplate {
@@ -27,37 +27,31 @@ public class FetchRelationsTemplate {
     public static <T> List<T> executeAndEnrichList(List<String> includePaths,
                                                    JpaSpecificationExecutor<T> repository,
                                                    Function<JpaSpecificationExecutor<T>, List<T>> actualOperation) {
-        List<T> result = executeAndEnrich(includePaths,
+        return executeAndEnrich(includePaths,
                 () -> actualOperation.apply(repository),
                 list -> list,
                 repository::findAll
         );
-
-        return result;
     }
 
     public static <T> Page<T> executeAndEnrichPage(List<String> includePaths,
                                                    JpaSpecificationExecutor<T> repository,
                                                    Function<JpaSpecificationExecutor<T>, Page<T>> actualOperation) {
-        Page<T> result = executeAndEnrich(includePaths,
+        return executeAndEnrich(includePaths,
                 () -> actualOperation.apply(repository),
                 Slice::getContent,
                 repository::findAll
         );
-
-        return result;
     }
 
     public static <T> Optional<T> executeAndEnrichOne(List<String> includePaths,
                                                       JpaSpecificationExecutor<T> repository,
                                                       Function<JpaSpecificationExecutor<T>, Optional<T>> actualOperation) {
-        Optional<T> result = executeAndEnrich(includePaths,
+        return executeAndEnrich(includePaths,
                 () -> actualOperation.apply(repository),
-                one -> one.map(Collections::singletonList).orElse(Collections.EMPTY_LIST),
+                one -> one.map(Collections::singletonList).orElse(Collections.emptyList()),
                 repository::findOne
         );
-
-        return result;
     }
 
     public static <R, T> R executeAndEnrich(List<String> includePaths,
@@ -69,7 +63,7 @@ public class FetchRelationsTemplate {
         }
 
         List<Specification<Object>> includeSpecifications = includePaths.stream()
-                .map(SpecSupport::buildFetchSpec)
+                .map(FetchRelationsTemplate::buildFetchSpec)
                 .collect(Collectors.toList());
 
         R result = actualOperation.get();
@@ -88,5 +82,22 @@ public class FetchRelationsTemplate {
         }
 
         return result;
+    }
+
+    private static Specification<Object> buildFetchSpec(String attributePath) {
+        return (root, query, builder) -> {
+            PropertyPath path = PropertyPath.from(attributePath, root.getJavaType());
+            FetchParent<Object, Object> f = traversePathWithFetch(root, path);
+            Join<Object, Object> join = (Join<Object, Object>) f;
+
+            query.distinct(true);
+
+            return join.getOn();
+        };
+    }
+
+    private static FetchParent<Object, Object> traversePathWithFetch(FetchParent<?, ?> root, PropertyPath path) {
+        FetchParent<Object, Object> result = root.fetch(path.getSegment(), JoinType.LEFT);
+        return path.hasNext() ? traversePathWithFetch(result, Objects.requireNonNull(path.next())) : result;
     }
 }

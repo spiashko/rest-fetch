@@ -1,4 +1,4 @@
-package com.spiashko.restpersistence.demo.crudbase.repository;
+package com.spiashko.restpersistence.repo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

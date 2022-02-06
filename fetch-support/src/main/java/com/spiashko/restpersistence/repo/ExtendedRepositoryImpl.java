@@ -1,4 +1,4 @@
-package com.spiashko.restpersistence.demo.crudbase.repository;
+package com.spiashko.restpersistence.repo;
 
 import com.spiashko.restpersistence.fetch.FetchRelationsTemplate;
 import org.springframework.beans.factory.annotation.Configurable;

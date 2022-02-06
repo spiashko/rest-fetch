@@ -1,6 +1,6 @@
 package com.spiashko.restpersistence.demo;
 
-import com.spiashko.restpersistence.demo.crudbase.repository.ExtendedRepositoryImpl;
+import com.spiashko.restpersistence.repo.ExtendedRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
