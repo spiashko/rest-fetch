@@ -2,7 +2,8 @@ package com.spiashko.restpersistence.demo.manual;
 
 import com.spiashko.restpersistence.demo.BaseApplicationTest;
 import com.spiashko.restpersistence.demo.person.Person;
-import com.spiashko.restpersistence.demo.person.impl.PersonSpecialSearchService;
+import com.spiashko.restpersistence.demo.person.PersonRepository;
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ class JpaManualTest extends BaseApplicationTest {
     private EntityManager entityManager;
 
     @Autowired
-    private PersonSpecialSearchService searchService;
+    private PersonRepository repository;
 
     @Test
     void cartesianProductProblem() {
@@ -42,7 +43,7 @@ class JpaManualTest extends BaseApplicationTest {
     @Test
     void fixCartesianProductProblem() {
 
-        List<Person> people = searchService.bestSearch(null, Arrays.asList("kittens", "bestFriendForPeople"));
+        List<Person> people = repository.findAll(Arrays.asList("kittens", "bestFriendForPeople"), RSQLJPASupport.rsql("name!=kek"));
 
         assertEquals(people.size(), 6); // 2 * 2 * 2 - two people with two bestFriendForPeople and two kittens
 

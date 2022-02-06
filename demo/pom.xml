@@ -6,22 +6,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.1</version>
-        <relativePath/>
+        <artifactId>rest-persistence-parent</artifactId>
+        <groupId>com.spiashko.rest-persistence</groupId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.spiashko.rest-persistence</groupId>
     <artifactId>demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <rest-persistence.version>0.0.1-SNAPSHOT</rest-persistence.version>
+        <rest-persistence.version>${parent.version}</rest-persistence.version>
     </properties>
 
     <dependencies>
@@ -30,15 +27,9 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>com.spiashko.rest-persistence</groupId>
-            <artifactId>rsql-annotation-spring-boot-starter</artifactId>
-            <version>${rest-persistence.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.spiashko.rest-persistence</groupId>
-            <artifactId>rfetch-annotation-spring-boot-starter</artifactId>
+            <artifactId>fetch-support</artifactId>
             <version>${rest-persistence.version}</version>
         </dependency>
         <dependency>
@@ -58,6 +49,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>
@@ -89,7 +85,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.4</version>
+            <version>1.6.5</version>
         </dependency>
 
         <dependency>
@@ -103,6 +99,11 @@
             <artifactId>jackson-datatype-hibernate5</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.perplexhub</groupId>
+            <artifactId>rsql-jpa-spring-boot-starter</artifactId>
+            <version>5.0.19</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -158,7 +159,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

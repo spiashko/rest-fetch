@@ -1,12 +1,13 @@
 package com.spiashko.restpersistence.demo;
 
+import com.spiashko.restpersistence.demo.crudbase.repository.ExtendedRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//@EnableJpaRepositories(
-//        basePackages = "com.baeldung.repository", repositoryImplementationPostfix = "CustomImpl")
+@EnableJpaRepositories(
+        repositoryBaseClass = ExtendedRepositoryImpl.class)
 @EnableTransactionManagement
 @SpringBootApplication
 public class RestPersistenceDemoApplication {

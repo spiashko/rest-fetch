@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.spiashko.restpersistence.rfetch.annotation.autoconfigure.RfetchSpecConfiguration
