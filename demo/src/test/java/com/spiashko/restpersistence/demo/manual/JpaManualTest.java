@@ -65,7 +65,7 @@ class JpaManualTest extends BaseApplicationTest {
     void fixCartesianProductProblem() {
 
 //        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople", "kittens"), RSQLJPASupport.rsql("name!=kek"));
-        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople.kittens"), RSQLJPASupport.rsql("name==jackson"));
+        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople.kittens"), RSQLJPASupport.rsql("name==olivier"));
 
         assertEquals(people.size(), 6); // 2 * 2 * 2 - two people with two bestFriendForPeople and two kittens
 

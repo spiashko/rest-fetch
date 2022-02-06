@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @SuppressWarnings("unchecked")
@@ -99,10 +98,11 @@ public class FetchRelationsTemplate {
 
                 Collection enrichedCollection = getQuery(fetchSpec.and(limitedByCollectionSpec), currentClass).getResultList();
                 Collection currentCollectionCandidate = new ArrayList<Object>();
-                for(Object e : enrichedCollection){
+                for (Object e : enrichedCollection) {
                     Field field = FieldUtils.getField(e.getClass(), finalPath.getSegment(), true);
                     Object nestedObject = ReflectionUtils.getField(field, e);
-                    if(nestedObject instanceof Collection){
+                    if (nestedObject instanceof Collection) {
+                        currentCollectionCandidate.addAll((Collection) nestedObject);
                         //unwrap collection
                     } else {
                         currentCollectionCandidate.add(nestedObject);
