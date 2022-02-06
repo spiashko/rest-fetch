@@ -8,14 +8,20 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.SelfReferenceResolutionConstants;
-import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilter;
-import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.SelfReferenceResolutionFilterMixin;
-import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.SelfReferenceResolutionSerializer;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionConstants;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionFilter;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionFilterMixin;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionSerializer;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.servlet.IncludePathsFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 @Configuration
 public class JacksonConfiguration {
@@ -55,5 +61,20 @@ public class JacksonConfiguration {
                             new SelfReferenceResolutionFilter()));
             builder.mixIn(Object.class, SelfReferenceResolutionFilterMixin.class);
         };
+    }
+
+    @Bean
+    public IncludePathsFilter includePathsFilter() {
+        return new IncludePathsFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean<IncludePathsFilter> includePathsFilterRegistrationBean(IncludePathsFilter includePathsFilter) {
+        FilterRegistrationBean<IncludePathsFilter> registration = new FilterRegistrationBean<>(includePathsFilter);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration
+                .setName("includePathsFilter");
+        registration.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+        return registration;
     }
 }

@@ -1,4 +1,4 @@
-package com.spiashko.jpafetch.jacksonjpa.selfrefresolution;
+package com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;

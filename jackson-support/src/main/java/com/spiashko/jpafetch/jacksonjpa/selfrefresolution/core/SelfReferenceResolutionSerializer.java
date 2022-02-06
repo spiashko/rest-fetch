@@ -1,4 +1,4 @@
-package com.spiashko.jpafetch.jacksonjpa.selfrefresolution;
+package com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
