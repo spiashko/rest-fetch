@@ -3,6 +3,7 @@ package com.spiashko.restpersistence.fetch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.hibernate.annotations.QueryHints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
@@ -118,7 +119,7 @@ public class FetchRelationsTemplate {
         return result;
     }
 
-    protected <T> TypedQuery<T> getQuery(@Nullable Specification<T> spec, Class<T> domainClass) {
+    private <T> TypedQuery<T> getQuery(@Nullable Specification<T> spec, Class<T> domainClass) {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(domainClass);
@@ -128,7 +129,7 @@ public class FetchRelationsTemplate {
 
         TypedQuery<T> q = em.createQuery(query);
 
-        //set hint
+        q.setHint(QueryHints.PASS_DISTINCT_THROUGH, false);
 
         return q;
     }
