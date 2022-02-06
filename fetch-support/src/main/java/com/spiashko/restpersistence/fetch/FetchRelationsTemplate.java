@@ -23,7 +23,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-@SuppressWarnings("unchecked")
 @Slf4j
 public class FetchRelationsTemplate {
 
@@ -62,6 +61,7 @@ public class FetchRelationsTemplate {
         );
     }
 
+    @SuppressWarnings("unchecked")
     public <R, T> R executeAndEnrich(List<String> includePaths,
                                      Class<T> domainClass,
                                      Supplier<R> actualOperation,
@@ -81,10 +81,10 @@ public class FetchRelationsTemplate {
         for (String includedPath : includePaths) {
             PropertyPath path = PropertyPath.from(includedPath, domainClass);
 
-            Collection currentCollection = entities;
-            Class currentClass = domainClass;
+            Collection<Object> currentCollection = (Collection<Object>) entities;
+            Class<Object> currentClass = (Class<Object>) domainClass;
             while (path != null) {
-                Collection finaCurrentCollection = currentCollection;
+                Collection<?> finaCurrentCollection = currentCollection;
                 PropertyPath finalPath = path;
 
                 Specification<Object> limitedByCollectionSpec = (root, query, builder) -> root.in(finaCurrentCollection);
@@ -96,14 +96,13 @@ public class FetchRelationsTemplate {
                     return join.getOn();
                 };
 
-                Collection enrichedCollection = getQuery(fetchSpec.and(limitedByCollectionSpec), currentClass).getResultList();
-                Collection currentCollectionCandidate = new ArrayList<Object>();
+                Collection<Object> enrichedCollection = getQuery(fetchSpec.and(limitedByCollectionSpec), currentClass).getResultList();
+                Collection<Object> currentCollectionCandidate = new ArrayList<>();
                 for (Object e : enrichedCollection) {
                     Field field = FieldUtils.getField(e.getClass(), finalPath.getSegment(), true);
                     Object nestedObject = ReflectionUtils.getField(field, e);
                     if (nestedObject instanceof Collection) {
-                        currentCollectionCandidate.addAll((Collection) nestedObject);
-                        //unwrap collection
+                        currentCollectionCandidate.addAll((Collection<Object>) nestedObject);
                     } else {
                         currentCollectionCandidate.add(nestedObject);
                     }
@@ -111,7 +110,7 @@ public class FetchRelationsTemplate {
 
                 currentCollection = currentCollectionCandidate;
 
-                currentClass = path.getType();
+                currentClass = (Class<Object>) path.getType();
                 path = path.next();
             }
         }
@@ -127,7 +126,11 @@ public class FetchRelationsTemplate {
         Root<T> root = applySpecificationToCriteria(spec, domainClass, query);
         query.select(root);
 
-        return em.createQuery(query);
+        TypedQuery<T> q = em.createQuery(query);
+
+        //set hint
+
+        return q;
     }
 
     private <S, T> Root<T> applySpecificationToCriteria(@Nullable Specification<T> spec, Class<T> domainClass,
