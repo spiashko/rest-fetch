@@ -2,6 +2,7 @@ package com.spiashko.restpersistence.fetch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,10 +12,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -68,10 +71,6 @@ public class FetchRelationsTemplate {
             throw new RuntimeException("method must be executed within transaction");
         }
 
-        List<Specification<Object>> includeSpecifications = includePaths.stream()
-                .map(this::buildFetchSpec)
-                .collect(Collectors.toList());
-
         R result = actualOperation.get();
         Collection<T> entities = extractor.apply(result);
 
@@ -80,31 +79,44 @@ public class FetchRelationsTemplate {
             return result;
         }
 
-        Specification<Object> limitedByCollection = (root, query, builder) -> root.in(entities);
+        for (String includedPath : includePaths) {
+            PropertyPath path = PropertyPath.from(includedPath, domainClass);
 
-        for (Specification<Object> spec : includeSpecifications) {
-            Specification joinedSpec = spec.and(limitedByCollection);
-            getQuery(joinedSpec, domainClass).getResultList();
+            Collection currentCollection = entities;
+            Class currentClass = domainClass;
+            while (path != null) {
+                Collection finaCurrentCollection = currentCollection;
+                PropertyPath finalPath = path;
+
+                Specification<Object> limitedByCollectionSpec = (root, query, builder) -> root.in(finaCurrentCollection);
+
+                Specification<Object> fetchSpec = (root, query, builder) -> {
+                    FetchParent<Object, Object> f = root.fetch(finalPath.getSegment(), JoinType.LEFT);
+                    Join<Object, Object> join = (Join<Object, Object>) f;
+                    query.distinct(true);
+                    return join.getOn();
+                };
+
+                Collection enrichedCollection = getQuery(fetchSpec.and(limitedByCollectionSpec), currentClass).getResultList();
+                Collection currentCollectionCandidate = new ArrayList<Object>();
+                for(Object e : enrichedCollection){
+                    Field field = FieldUtils.getField(e.getClass(), finalPath.getSegment(), true);
+                    Object nestedObject = ReflectionUtils.getField(field, e);
+                    if(nestedObject instanceof Collection){
+                        //unwrap collection
+                    } else {
+                        currentCollectionCandidate.add(nestedObject);
+                    }
+                }
+
+                currentCollection = currentCollectionCandidate;
+
+                currentClass = path.getType();
+                path = path.next();
+            }
         }
 
         return result;
-    }
-
-    private Specification<Object> buildFetchSpec(String attributePath) {
-        return (root, query, builder) -> {
-            PropertyPath path = PropertyPath.from(attributePath, root.getJavaType());
-            FetchParent<Object, Object> f = traversePathWithFetch(root, path);
-            Join<Object, Object> join = (Join<Object, Object>) f;
-
-            query.distinct(true);
-
-            return join.getOn();
-        };
-    }
-
-    private FetchParent<Object, Object> traversePathWithFetch(FetchParent<?, ?> root, PropertyPath path) {
-        FetchParent<Object, Object> result = root.fetch(path.getSegment(), JoinType.LEFT);
-        return path.hasNext() ? traversePathWithFetch(result, Objects.requireNonNull(path.next())) : result;
     }
 
     protected <T> TypedQuery<T> getQuery(@Nullable Specification<T> spec, Class<T> domainClass) {

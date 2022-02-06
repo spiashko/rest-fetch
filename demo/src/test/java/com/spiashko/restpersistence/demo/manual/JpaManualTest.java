@@ -6,6 +6,8 @@ import com.spiashko.restpersistence.demo.person.PersonRepository;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +24,9 @@ class JpaManualTest extends BaseApplicationTest {
     @Autowired
     private PersonRepository repository;
 
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @Test
     void cartesianProductProblem() {
 
@@ -37,14 +42,30 @@ class JpaManualTest extends BaseApplicationTest {
         // USE bestFriend/bestFriendForPeople to reproduce cartesian product problem
         // https://stackoverflow.com/questions/48520827/use-queryhint-when-using-jpaspecificationexecutor
 
+//        List<Person> result = transactionTemplate.execute((s) -> {
+//            List<Person> jackson = entityManager.createQuery("" +
+//                            "select p from Person p " +
+//                            "where p.name = 'jackson'", Person.class)
+//                    .getResultList();
+//
+//            List<Person> people = entityManager.createQuery("" +
+//                            "select p from Person p " +
+//                            "left join fetch p.bestFriend " +
+//                            "where p.bestFriend in :jackson", Person.class)
+//                    .setParameter("jackson", jackson)
+//                    .getResultList();
+//
+//            return jackson;
+//        });
+
     }
 
 
     @Test
     void fixCartesianProductProblem() {
 
-        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople", "kittens"), RSQLJPASupport.rsql("name!=kek"));
-//        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople.kittens"), RSQLJPASupport.rsql("name==jackson"));
+//        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople", "kittens"), RSQLJPASupport.rsql("name!=kek"));
+        List<Person> people = repository.findAll(Arrays.asList("bestFriendForPeople.kittens"), RSQLJPASupport.rsql("name==jackson"));
 
         assertEquals(people.size(), 6); // 2 * 2 * 2 - two people with two bestFriendForPeople and two kittens
 
