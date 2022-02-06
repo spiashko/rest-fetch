@@ -41,6 +41,9 @@ public class IncludePathsHolder {
         private final List<String> includedWithSubPaths;
 
         public ValueContainer(List<String> includedPaths) {
+            if (includedPaths == null) {
+                includedPaths = Collections.emptyList();
+            }
             this.includedPaths = includedPaths;
             this.includedWithSubPaths = includedPaths.stream()
                     .map(this::convertToAllSubPaths)

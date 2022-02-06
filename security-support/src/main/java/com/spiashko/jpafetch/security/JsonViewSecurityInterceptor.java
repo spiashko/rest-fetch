@@ -18,6 +18,10 @@ public class JsonViewSecurityInterceptor {
     @SneakyThrows
     public boolean intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {
 
+        if (effectedPaths == null) {
+            return true;
+        }
+
         for (String includedPath : effectedPaths) {
             List<String> pathParts = Stream.of(includedPath.split("\\."))
                     .collect(Collectors.toList());

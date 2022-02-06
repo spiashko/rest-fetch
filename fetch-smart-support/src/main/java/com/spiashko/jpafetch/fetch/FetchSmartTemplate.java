@@ -79,6 +79,8 @@ public class FetchSmartTemplate {
             return result;
         }
 
+        //TODO: add cache for situations like include=kittens.motherForKids,kittens.fatherForKids
+
         for (String includedPath : includePaths) {
             PropertyPath path = PropertyPath.from(includedPath, domainClass);
 

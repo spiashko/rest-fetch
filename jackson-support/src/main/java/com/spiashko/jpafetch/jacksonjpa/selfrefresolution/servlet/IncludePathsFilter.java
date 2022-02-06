@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,10 +17,6 @@ public class IncludePathsFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
-        String[] includes = request.getParameterValues("include");
-        IncludePathsHolder.setIncludedPaths(Arrays.asList(includes));
-
         try {
             chain.doFilter(request, response);
         } finally {

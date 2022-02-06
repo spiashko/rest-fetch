@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.jpafetch.demo.cat.Cat;
 import com.spiashko.jpafetch.demo.cat.CatRepository;
 import com.spiashko.jpafetch.demo.crudbase.View;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class CatRestController {
             @RequestParam(value = "filter", required = false) String rsqlFilter,
             @RequestParam(value = "include", required = false) List<String> includePaths
     ) {
+        IncludePathsHolder.setIncludedPaths(includePaths);
         List<Cat> result = repository.findAll(includePaths, RSQLJPASupport.rsql(rsqlFilter));
         return result;
     }

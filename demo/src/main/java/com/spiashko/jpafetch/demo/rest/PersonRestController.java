@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.jpafetch.demo.crudbase.View;
 import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.demo.person.PersonRepository;
+import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ public class PersonRestController {
             @RequestParam(value = "filter", required = false) String rsqlFilter,
             @RequestParam(value = "include", required = false) List<String> includePaths
     ) {
+        IncludePathsHolder.setIncludedPaths(includePaths); //TODO: move it to AOP
         List<Person> result = repository.findAll(includePaths, RSQLJPASupport.rsql(rsqlFilter));
         return result;
     }
