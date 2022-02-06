@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.spiashko.jpa-fetch-support</groupId>
-            <artifactId>jackon-jpa-spring-boot-starter</artifactId>
+            <artifactId>jackson-spring-boot-starter</artifactId>
             <version>${jpa-fetch-support.version}</version>
         </dependency>
 

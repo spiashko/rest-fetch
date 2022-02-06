@@ -19,7 +19,7 @@
 
     <modules>
         <module>demo</module>
-        <module>jackon-jpa-support</module>
+        <module>jackson-support</module>
         <module>security-support</module>
         <module>fetch-smart-support</module>
         <module>fetch-all-in-one-support</module>
