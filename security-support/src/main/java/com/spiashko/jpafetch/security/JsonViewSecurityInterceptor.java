@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class JsonViewSecurityInterceptor {
 
     @SneakyThrows
-    public void intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {
+    public boolean intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {
 
         for (String includedPath : effectedPaths) {
             List<String> pathParts = Stream.of(includedPath.split("\\."))
@@ -44,5 +44,7 @@ public class JsonViewSecurityInterceptor {
                 }
             }
         }
+
+        return true;
     }
 }

@@ -29,12 +29,17 @@
         </dependency>
         <dependency>
             <groupId>com.spiashko.jpa-fetch-support</groupId>
-            <artifactId>smart-fetch-support</artifactId>
+            <artifactId>fetch-smart-support</artifactId>
             <version>${jpa-fetch-support.version}</version>
         </dependency>
         <dependency>
             <groupId>com.spiashko.jpa-fetch-support</groupId>
             <artifactId>jackson-spring-boot-starter</artifactId>
+            <version>${jpa-fetch-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.spiashko.jpa-fetch-support</groupId>
+            <artifactId>security-spring-boot-starter</artifactId>
             <version>${jpa-fetch-support.version}</version>
         </dependency>
 
