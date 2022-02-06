@@ -11,8 +11,8 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.spiashko.rest-persistence</groupId>
-    <artifactId>rest-persistence-parent</artifactId>
+    <groupId>com.spiashko.jpa-fetch-support</groupId>
+    <artifactId>jpa-fetch-support-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>

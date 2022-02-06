@@ -1,4 +1,4 @@
-### Rest-persistence
+### jpa-fetch-support
 
 #### Objectives
 
@@ -15,8 +15,8 @@ extendable solution.
 in separate terminal
 
 - `cd demo/postman`
-- `newman run rest-persistence-demo.postman_collection.json --folder cats --verbose`
-- `newman run rest-persistence-demo.postman_collection.json --folder persons --verbose`
+- `newman run jpa-fetch-support-demo.postman_collection.json --folder cats --verbose`
+- `newman run jpa-fetch-support-demo.postman_collection.json --folder persons --verbose`
 
 each folder contains 4 request:
 

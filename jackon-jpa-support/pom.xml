@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>rest-persistence-parent</artifactId>
-        <groupId>com.spiashko.rest-persistence</groupId>
+        <artifactId>jpa-fetch-support-parent</artifactId>
+        <groupId>com.spiashko.jpa-fetch-support</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <rest-persistence.version>0.0.1-SNAPSHOT</rest-persistence.version>
+        <jpa-fetch-support.version>0.0.1-SNAPSHOT</jpa-fetch-support.version>
     </properties>
 
     <dependencies>

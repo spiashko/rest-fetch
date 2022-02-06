@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>rest-persistence-parent</artifactId>
-        <groupId>com.spiashko.rest-persistence</groupId>
+        <artifactId>jpa-fetch-support-parent</artifactId>
+        <groupId>com.spiashko.jpa-fetch-support</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -18,7 +18,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <rest-persistence.version>${parent.version}</rest-persistence.version>
+        <jpa-fetch-support.version>${parent.version}</jpa-fetch-support.version>
     </properties>
 
     <dependencies>
@@ -28,14 +28,14 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.rest-persistence</groupId>
+            <groupId>com.spiashko.jpa-fetch-support</groupId>
             <artifactId>smart-fetch-support</artifactId>
-            <version>${rest-persistence.version}</version>
+            <version>${jpa-fetch-support.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.rest-persistence</groupId>
+            <groupId>com.spiashko.jpa-fetch-support</groupId>
             <artifactId>jackon-jpa-spring-boot-starter</artifactId>
-            <version>${rest-persistence.version}</version>
+            <version>${jpa-fetch-support.version}</version>
         </dependency>
 
         <dependency>
