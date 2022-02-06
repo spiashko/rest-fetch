@@ -2,7 +2,6 @@ package com.spiashko.restpersistence.security;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -13,11 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@UtilityClass
+
 public class JsonViewSecurityInterceptor {
 
     @SneakyThrows
-    public static void intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {
+    public void intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {
 
         for (String includedPath : effectedPaths) {
             List<String> pathParts = Stream.of(includedPath.split("\\."))

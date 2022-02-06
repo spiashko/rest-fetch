@@ -1,7 +1,6 @@
 package com.spiashko.restpersistence.repo;
 
 import com.spiashko.restpersistence.fetch.FetchRelationsTemplate;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,24 +15,25 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-@Configurable
 @Transactional(readOnly = true)
 public class ExtendedRepositoryImpl<T, ID extends Serializable>
         extends SimpleJpaRepository<T, ID> implements ExtendedRepository<T, ID> {
 
+    private final FetchRelationsTemplate fetchRelationsTemplate;
+
     public ExtendedRepositoryImpl(JpaEntityInformation<T, ?> entityInformation,
                                   EntityManager entityManager) {
         super(entityInformation, entityManager);
+        fetchRelationsTemplate = new FetchRelationsTemplate(entityManager);
     }
 
     @Override
     public List<T> findAll(List<String> includePaths, Specification<T> spec, Sort sort) {
-
         if (CollectionUtils.isEmpty(includePaths)) {
             return findAll(spec, sort);
         }
-
-        return FetchRelationsTemplate.executeAndEnrichList(includePaths,
+        return fetchRelationsTemplate.executeAndEnrichList(includePaths,
+                getDomainClass(),
                 this,
                 r -> r.findAll(spec, sort));
     }
@@ -43,8 +43,8 @@ public class ExtendedRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return findAll(spec, pageable);
         }
-
-        return FetchRelationsTemplate.executeAndEnrichPage(includePaths,
+        return fetchRelationsTemplate.executeAndEnrichPage(includePaths,
+                getDomainClass(),
                 this,
                 r -> r.findAll(spec, pageable));
     }
@@ -54,11 +54,10 @@ public class ExtendedRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return findOne(spec);
         }
-
-        return FetchRelationsTemplate.executeAndEnrichOne(includePaths,
+        return fetchRelationsTemplate.executeAndEnrichOne(includePaths,
+                getDomainClass(),
                 this,
                 r -> r.findOne(spec));
-
     }
 
 }

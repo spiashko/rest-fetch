@@ -1,69 +1,75 @@
 package com.spiashko.restpersistence.fetch;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.mapping.PropertyPath;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.criteria.FetchParent;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @SuppressWarnings("unchecked")
 @Slf4j
-@UtilityClass
 public class FetchRelationsTemplate {
 
-    public static <T> List<T> executeAndEnrichList(List<String> includePaths,
-                                                   JpaSpecificationExecutor<T> repository,
-                                                   Function<JpaSpecificationExecutor<T>, List<T>> actualOperation) {
+    private final EntityManager em;
+
+    public <T> List<T> executeAndEnrichList(List<String> includePaths,
+                                            Class<T> domainClass,
+                                            JpaSpecificationExecutor<T> repository,
+                                            Function<JpaSpecificationExecutor<T>, List<T>> actualOperation) {
         return executeAndEnrich(includePaths,
+                domainClass,
                 () -> actualOperation.apply(repository),
-                list -> list,
-                repository::findAll
+                list -> list
         );
     }
 
-    public static <T> Page<T> executeAndEnrichPage(List<String> includePaths,
-                                                   JpaSpecificationExecutor<T> repository,
-                                                   Function<JpaSpecificationExecutor<T>, Page<T>> actualOperation) {
+    public <T> Page<T> executeAndEnrichPage(List<String> includePaths,
+                                            Class<T> domainClass,
+                                            JpaSpecificationExecutor<T> repository,
+                                            Function<JpaSpecificationExecutor<T>, Page<T>> actualOperation) {
         return executeAndEnrich(includePaths,
+                domainClass,
                 () -> actualOperation.apply(repository),
-                Slice::getContent,
-                repository::findAll
+                Slice::getContent
         );
     }
 
-    public static <T> Optional<T> executeAndEnrichOne(List<String> includePaths,
-                                                      JpaSpecificationExecutor<T> repository,
-                                                      Function<JpaSpecificationExecutor<T>, Optional<T>> actualOperation) {
+    public <T> Optional<T> executeAndEnrichOne(List<String> includePaths,
+                                               Class<T> domainClass,
+                                               JpaSpecificationExecutor<T> repository,
+                                               Function<JpaSpecificationExecutor<T>, Optional<T>> actualOperation) {
         return executeAndEnrich(includePaths,
+                domainClass,
                 () -> actualOperation.apply(repository),
-                one -> one.map(Collections::singletonList).orElse(Collections.emptyList()),
-                repository::findOne
+                one -> one.map(Collections::singletonList).orElse(Collections.emptyList())
         );
     }
 
-    public static <R, T> R executeAndEnrich(List<String> includePaths,
-                                            Supplier<R> actualOperation,
-                                            Function<R, Collection<T>> extractor,
-                                            Consumer<Specification<T>> fetchExecutor) {
+    public <R, T> R executeAndEnrich(List<String> includePaths,
+                                     Class<T> domainClass,
+                                     Supplier<R> actualOperation,
+                                     Function<R, Collection<T>> extractor) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()) {
             throw new RuntimeException("method must be executed within transaction");
         }
 
         List<Specification<Object>> includeSpecifications = includePaths.stream()
-                .map(FetchRelationsTemplate::buildFetchSpec)
+                .map(this::buildFetchSpec)
                 .collect(Collectors.toList());
 
         R result = actualOperation.get();
@@ -78,13 +84,13 @@ public class FetchRelationsTemplate {
 
         for (Specification<Object> spec : includeSpecifications) {
             Specification joinedSpec = spec.and(limitedByCollection);
-            fetchExecutor.accept(joinedSpec);
+            getQuery(joinedSpec, domainClass).getResultList();
         }
 
         return result;
     }
 
-    private static Specification<Object> buildFetchSpec(String attributePath) {
+    private Specification<Object> buildFetchSpec(String attributePath) {
         return (root, query, builder) -> {
             PropertyPath path = PropertyPath.from(attributePath, root.getJavaType());
             FetchParent<Object, Object> f = traversePathWithFetch(root, path);
@@ -96,8 +102,41 @@ public class FetchRelationsTemplate {
         };
     }
 
-    private static FetchParent<Object, Object> traversePathWithFetch(FetchParent<?, ?> root, PropertyPath path) {
+    private FetchParent<Object, Object> traversePathWithFetch(FetchParent<?, ?> root, PropertyPath path) {
         FetchParent<Object, Object> result = root.fetch(path.getSegment(), JoinType.LEFT);
         return path.hasNext() ? traversePathWithFetch(result, Objects.requireNonNull(path.next())) : result;
+    }
+
+    protected <T> TypedQuery<T> getQuery(@Nullable Specification<T> spec, Class<T> domainClass) {
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(domainClass);
+
+        Root<T> root = applySpecificationToCriteria(spec, domainClass, query);
+        query.select(root);
+
+        return em.createQuery(query);
+    }
+
+    private <S, T> Root<T> applySpecificationToCriteria(@Nullable Specification<T> spec, Class<T> domainClass,
+                                                        CriteriaQuery<S> query) {
+
+        Assert.notNull(domainClass, "Domain class must not be null!");
+        Assert.notNull(query, "CriteriaQuery must not be null!");
+
+        Root<T> root = query.from(domainClass);
+
+        if (spec == null) {
+            return root;
+        }
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        Predicate predicate = spec.toPredicate(root, query, builder);
+
+        if (predicate != null) {
+            query.where(predicate);
+        }
+
+        return root;
     }
 }
