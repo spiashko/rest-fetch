@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FetchRelationsTemplate {
+public class FetchSmartTemplate {
 
     private final EntityManager em;
 

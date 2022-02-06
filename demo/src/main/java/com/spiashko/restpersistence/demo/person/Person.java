@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.restpersistence.demo.cat.Cat;
 import com.spiashko.restpersistence.demo.crudbase.View;
 import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
-import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +31,7 @@ public class Person extends BaseEntity {
     @Column(name = "id")
     private UUID id;
 
-    @JsonView({View.Retrieve.class, View.PersonCreate.class})
+    @JsonView({View.Retrieve.class})
     @NotEmpty
     @Column(name = "name")
     private String name;
@@ -42,8 +41,7 @@ public class Person extends BaseEntity {
     @OneToMany(mappedBy = Cat.Fields.owner, fetch = FetchType.LAZY)
     private List<Cat> kittens;
 
-    @EntityByIdDeserialize(idClass = UUID.class)
-    @JsonView({View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @NotNull
     @JsonIgnoreProperties(Person.Fields.bestFriendForPeople)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

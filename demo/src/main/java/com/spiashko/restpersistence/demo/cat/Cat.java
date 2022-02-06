@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.restpersistence.demo.crudbase.View;
 import com.spiashko.restpersistence.demo.crudbase.entity.BaseEntity;
 import com.spiashko.restpersistence.demo.person.Person;
-import com.spiashko.restpersistence.jacksonjpa.entitybyid.EntityByIdDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,38 +32,35 @@ public class Cat extends BaseEntity {
     @Column(name = "id")
     private UUID id;
 
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @NotEmpty
     @Column(name = "name")
     private String name;
 
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @NotNull
     @Column(name = "dob")
     private LocalDate dob;
 
-    @EntityByIdDeserialize(idClass = UUID.class)
-    @JsonView({View.CatCreate.class})
+    @JsonView({View.FullRetrieve.class})
     @NotNull
     @JsonIgnoreProperties(Person.Fields.kittens)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_owner")
     private Person owner;
 
-    @EntityByIdDeserialize(idClass = UUID.class)
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_father", updatable = false)
     private Cat father;
 
-    @EntityByIdDeserialize(idClass = UUID.class)
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_mother", updatable = false)
     private Cat mother;
 
     @Enumerated(EnumType.STRING)
-    @JsonView({View.Retrieve.class, View.CatCreate.class})
+    @JsonView({View.Retrieve.class})
     @NotNull
     @Column(name = "gender")
     private Gender gender;

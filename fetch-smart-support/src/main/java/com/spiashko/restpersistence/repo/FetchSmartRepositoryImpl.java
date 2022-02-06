@@ -1,6 +1,6 @@
 package com.spiashko.restpersistence.repo;
 
-import com.spiashko.restpersistence.fetch.FetchRelationsTemplate;
+import com.spiashko.restpersistence.fetch.FetchSmartTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public class ExtendedRepositoryImpl<T, ID extends Serializable>
-        extends SimpleJpaRepository<T, ID> implements ExtendedRepository<T, ID> {
+public class FetchSmartRepositoryImpl<T, ID extends Serializable>
+        extends SimpleJpaRepository<T, ID> implements FetchSmartRepository<T, ID> {
 
-    private final FetchRelationsTemplate fetchRelationsTemplate;
+    private final FetchSmartTemplate fetchSmartTemplate;
 
-    public ExtendedRepositoryImpl(JpaEntityInformation<T, ?> entityInformation,
-                                  EntityManager entityManager) {
+    public FetchSmartRepositoryImpl(JpaEntityInformation<T, ?> entityInformation,
+                                    EntityManager entityManager) {
         super(entityInformation, entityManager);
-        fetchRelationsTemplate = new FetchRelationsTemplate(entityManager);
+        fetchSmartTemplate = new FetchSmartTemplate(entityManager);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ExtendedRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return findAll(spec, sort);
         }
-        return fetchRelationsTemplate.executeAndEnrichList(includePaths,
+        return fetchSmartTemplate.executeAndEnrichList(includePaths,
                 getDomainClass(),
                 this,
                 r -> r.findAll(spec, sort));
@@ -43,7 +43,7 @@ public class ExtendedRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return findAll(spec, pageable);
         }
-        return fetchRelationsTemplate.executeAndEnrichPage(includePaths,
+        return fetchSmartTemplate.executeAndEnrichPage(includePaths,
                 getDomainClass(),
                 this,
                 r -> r.findAll(spec, pageable));
@@ -54,7 +54,7 @@ public class ExtendedRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return findOne(spec);
         }
-        return fetchRelationsTemplate.executeAndEnrichOne(includePaths,
+        return fetchSmartTemplate.executeAndEnrichOne(includePaths,
                 getDomainClass(),
                 this,
                 r -> r.findOne(spec));

@@ -40,7 +40,7 @@ public abstract class BaseEntity implements Persistable<UUID> {
         return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
     }
 
-    @JsonView({View.Retrieve.class, View.Create.class})
+    @JsonView({View.Retrieve.class})
     @Override
     public abstract UUID getId();
 

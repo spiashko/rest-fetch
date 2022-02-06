@@ -6,7 +6,10 @@ import com.spiashko.restpersistence.demo.person.Person;
 import com.spiashko.restpersistence.demo.person.PersonRepository;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -16,13 +19,6 @@ import java.util.List;
 public class PersonRestController {
 
     private final PersonRepository repository;
-
-    @JsonView(View.Retrieve.class)
-    @PostMapping
-    public Person create(@JsonView(View.PersonCreate.class) @RequestBody Person entityToCreate) {
-        Person result = repository.save(entityToCreate);
-        return result;
-    }
 
     @JsonView(View.Retrieve.class)
     @GetMapping

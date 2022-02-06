@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.spiashko.rest-persistence</groupId>
-            <artifactId>fetch-support</artifactId>
+            <artifactId>smart-fetch-support</artifactId>
             <version>${rest-persistence.version}</version>
         </dependency>
         <dependency>
@@ -69,17 +69,6 @@
             <groupId>com.github.gavlyukovskiy</groupId>
             <artifactId>datasource-proxy-spring-boot-starter</artifactId>
             <version>1.8.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
 
         <dependency>

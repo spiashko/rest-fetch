@@ -6,7 +6,9 @@ import com.spiashko.restpersistence.demo.cat.CatRepository;
 import com.spiashko.restpersistence.demo.crudbase.View;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -15,13 +17,6 @@ import java.util.List;
 public class CatRestController {
 
     private final CatRepository repository;
-
-    @JsonView(View.Retrieve.class)
-    @PostMapping("/cats")
-    public Cat create(@JsonView(View.CatCreate.class) @RequestBody Cat entityToCreate) {
-        Cat result = repository.save(entityToCreate);
-        return result;
-    }
 
     @JsonView(View.Retrieve.class)
     @GetMapping("/cats")

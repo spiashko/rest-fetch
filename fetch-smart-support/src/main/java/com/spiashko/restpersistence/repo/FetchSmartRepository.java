@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface ExtendedRepository<T, ID extends Serializable>
+public interface FetchSmartRepository<T, ID extends Serializable>
         extends JpaRepository<T, ID> {
 
     default List<T> findAll(@Nullable List<String> includePaths) {
