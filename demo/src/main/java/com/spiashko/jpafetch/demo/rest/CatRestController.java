@@ -4,13 +4,18 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.jpafetch.demo.cat.Cat;
 import com.spiashko.jpafetch.demo.cat.CatRepository;
 import com.spiashko.jpafetch.demo.crudbase.View;
+import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
+import com.spiashko.jpafetch.security.JsonViewSecurityInterceptor;
+import io.github.perplexhub.rsql.RSQLCommonSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,14 +23,22 @@ import java.util.List;
 public class CatRestController {
 
     private final CatRepository repository;
+    private final JsonViewSecurityInterceptor interceptor;
 
+    @PreAuthorize("@jsonViewSecurityInterceptor.intercept(#includePaths, " +
+            "T(com.spiashko.jpafetch.demo.cat.Cat), " +
+            "T(com.spiashko.jpafetch.demo.crudbase.View$Retrieve))")
     @JsonView(View.Retrieve.class)
     @GetMapping("/cats")
     public List<Cat> findAll(
             @RequestParam(value = "filter", required = false) String rsqlFilter,
             @RequestParam(value = "include", required = false) List<String> includePaths
     ) {
+        ArrayList<String> effectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
+        interceptor.intercept(effectedPaths, Person.class, View.Retrieve.class);
+
         IncludePathsHolder.setIncludedPaths(includePaths);
+
         List<Cat> result = repository.findAll(includePaths, RSQLJPASupport.rsql(rsqlFilter));
         return result;
     }
