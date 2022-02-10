@@ -79,7 +79,12 @@ public class FetchSmartTemplate {
             return result;
         }
 
-        //TODO: add cache for situations like include=kittens.motherForKids,kittens.fatherForKids
+
+        /* TODO:
+         * add cache for situations like include=kittens.motherForKids,kittens.fatherForKids
+         * or even make include like include=(kittens(motherForKids,fatherForKids),bestFriend)
+         * an then visit recursively
+         */
 
         for (String includedPath : includePaths) {
             PropertyPath path = PropertyPath.from(includedPath, domainClass);
