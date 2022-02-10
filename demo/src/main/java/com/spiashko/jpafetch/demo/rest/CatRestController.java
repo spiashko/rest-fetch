@@ -35,7 +35,7 @@ public class CatRestController {
             @RequestParam(value = "include", required = false) List<String> includePaths
     ) {
         ArrayList<String> effectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
-        interceptor.intercept(effectedPaths, Person.class, View.Retrieve.class);
+        interceptor.intercept(effectedPaths, Cat.class, View.Retrieve.class);
 
         IncludePathsHolder.setIncludedPaths(includePaths);
 

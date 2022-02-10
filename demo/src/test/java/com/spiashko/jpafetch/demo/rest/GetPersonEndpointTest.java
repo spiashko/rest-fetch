@@ -2,6 +2,7 @@ package com.spiashko.jpafetch.demo.rest;
 
 import com.spiashko.jpafetch.demo.BaseApplicationTest;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,8 @@ class GetPersonEndpointTest extends BaseApplicationTest {
                     .get("/persons")
                 .then()
                     .statusCode(HttpStatus.OK.value())
-                    .body("size()", is(4))
-                    .body("[0].father.name", is(nullValue()));
+                    .body("size()", is(7))
+                    .body("[0].bestFriend.name", is(nullValue()));
         // @formatter:on
     }
 
@@ -32,7 +33,7 @@ class GetPersonEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("filter", "father.name==vasily")
+                    .queryParam("filter", "bestFriend.name==bob")
                 .when()
                     .get("/persons")
                 .then()
@@ -47,13 +48,13 @@ class GetPersonEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "father")
+                    .queryParam("include", "bestFriend")
                 .when()
                     .get("/persons")
                 .then()
                     .statusCode(HttpStatus.OK.value())
-                    .body("size()", is(4))
-                    .body("[0].father.name", is(not(emptyString())));
+                    .body("size()", is(7))
+                    .body("[0].bestFriend.name", is(not(emptyString())));
         // @formatter:on
     }
 
@@ -63,14 +64,14 @@ class GetPersonEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "father")
-                    .queryParam("filter", "father.name==vasily")
+                    .queryParam("include", "bestFriend")
+                    .queryParam("filter", "bestFriend.name==bob")
                 .when()
                     .get("/persons")
                 .then()
                     .statusCode(HttpStatus.OK.value())
                     .body("size()", is(2))
-                    .body("[0].father.name", is(not(emptyString())));
+                    .body("[0].bestFriend.name", is(not(emptyString())));
         // @formatter:on
     }
 

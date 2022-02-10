@@ -4,6 +4,7 @@ import com.spiashko.jpafetch.demo.BaseApplicationTest;
 import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.demo.person.PersonRepository;
 import io.github.perplexhub.rsql.RSQLJPASupport;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 class JpaManualTest extends BaseApplicationTest {
 
     @PersistenceContext
