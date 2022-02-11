@@ -25,9 +25,9 @@ public class FetchSmartTemplate {
 
     private final EntityManager em;
 
-    public <T> void executeAndEnrichList(List<String> includePaths,
-                                         Class<T> domainClass,
-                                         List<T> entities) {
+    public <T> void enrichList(List<String> includePaths,
+                               Class<T> domainClass,
+                               List<T> entities) {
         enrich(
                 includePaths,
                 domainClass,
@@ -35,9 +35,9 @@ public class FetchSmartTemplate {
         );
     }
 
-    public <T> void executeAndEnrichPage(List<String> includePaths,
-                                         Class<T> domainClass,
-                                         Page<T> entitiesPage) {
+    public <T> void enrichPage(List<String> includePaths,
+                               Class<T> domainClass,
+                               Page<T> entitiesPage) {
         enrich(
                 includePaths,
                 domainClass,
@@ -46,9 +46,9 @@ public class FetchSmartTemplate {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public <T> void executeAndEnrichOne(List<String> includePaths,
-                                        Class<T> domainClass,
-                                        Optional<T> entity) {
+    public <T> void enrichOne(List<String> includePaths,
+                              Class<T> domainClass,
+                              Optional<T> entity) {
         enrich(
                 includePaths,
                 domainClass,

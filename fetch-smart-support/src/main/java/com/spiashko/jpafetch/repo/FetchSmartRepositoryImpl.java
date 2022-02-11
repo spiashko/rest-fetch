@@ -33,7 +33,7 @@ public class FetchSmartRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return all;
         }
-        fetchSmartTemplate.executeAndEnrichList(includePaths, getDomainClass(), all);
+        fetchSmartTemplate.enrichList(includePaths, getDomainClass(), all);
         return all;
     }
 
@@ -43,7 +43,7 @@ public class FetchSmartRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return all;
         }
-        fetchSmartTemplate.executeAndEnrichPage(includePaths, getDomainClass(), all);
+        fetchSmartTemplate.enrichPage(includePaths, getDomainClass(), all);
         return all;
     }
 
@@ -53,7 +53,7 @@ public class FetchSmartRepositoryImpl<T, ID extends Serializable>
         if (CollectionUtils.isEmpty(includePaths)) {
             return one;
         }
-        fetchSmartTemplate.executeAndEnrichOne(includePaths, getDomainClass(), one);
+        fetchSmartTemplate.enrichOne(includePaths, getDomainClass(), one);
         return one;
     }
 
