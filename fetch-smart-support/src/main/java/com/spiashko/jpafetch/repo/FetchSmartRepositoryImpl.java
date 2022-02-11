@@ -29,35 +29,32 @@ public class FetchSmartRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public List<T> findAll(List<String> includePaths, Specification<T> spec, Sort sort) {
+        List<T> all = findAll(spec, sort);
         if (CollectionUtils.isEmpty(includePaths)) {
-            return findAll(spec, sort);
+            return all;
         }
-        return fetchSmartTemplate.executeAndEnrichList(includePaths,
-                getDomainClass(),
-                this,
-                r -> r.findAll(spec, sort));
+        fetchSmartTemplate.executeAndEnrichList(includePaths, getDomainClass(), all);
+        return all;
     }
 
     @Override
     public Page<T> findAll(List<String> includePaths, Specification<T> spec, Pageable pageable) {
+        Page<T> all = findAll(spec, pageable);
         if (CollectionUtils.isEmpty(includePaths)) {
-            return findAll(spec, pageable);
+            return all;
         }
-        return fetchSmartTemplate.executeAndEnrichPage(includePaths,
-                getDomainClass(),
-                this,
-                r -> r.findAll(spec, pageable));
+        fetchSmartTemplate.executeAndEnrichPage(includePaths, getDomainClass(), all);
+        return all;
     }
 
     @Override
     public Optional<T> findOne(List<String> includePaths, Specification<T> spec) {
+        Optional<T> one = findOne(spec);
         if (CollectionUtils.isEmpty(includePaths)) {
-            return findOne(spec);
+            return one;
         }
-        return fetchSmartTemplate.executeAndEnrichOne(includePaths,
-                getDomainClass(),
-                this,
-                r -> r.findOne(spec));
+        fetchSmartTemplate.executeAndEnrichOne(includePaths, getDomainClass(), one);
+        return one;
     }
 
 }

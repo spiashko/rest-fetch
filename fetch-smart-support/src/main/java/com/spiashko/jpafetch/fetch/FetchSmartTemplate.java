@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hibernate.annotations.QueryHints;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.mapping.PropertyPath;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -20,8 +18,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,56 +25,51 @@ public class FetchSmartTemplate {
 
     private final EntityManager em;
 
-    public <T> List<T> executeAndEnrichList(List<String> includePaths,
-                                            Class<T> domainClass,
-                                            JpaSpecificationExecutor<T> repository,
-                                            Function<JpaSpecificationExecutor<T>, List<T>> actualOperation) {
-        return executeAndEnrich(includePaths,
+    public <T> void executeAndEnrichList(List<String> includePaths,
+                                         Class<T> domainClass,
+                                         List<T> entities) {
+        enrich(
+                includePaths,
                 domainClass,
-                () -> actualOperation.apply(repository),
-                list -> list
+                entities
         );
     }
 
-    public <T> Page<T> executeAndEnrichPage(List<String> includePaths,
-                                            Class<T> domainClass,
-                                            JpaSpecificationExecutor<T> repository,
-                                            Function<JpaSpecificationExecutor<T>, Page<T>> actualOperation) {
-        return executeAndEnrich(includePaths,
+    public <T> void executeAndEnrichPage(List<String> includePaths,
+                                         Class<T> domainClass,
+                                         Page<T> entitiesPage) {
+        enrich(
+                includePaths,
                 domainClass,
-                () -> actualOperation.apply(repository),
-                Slice::getContent
+                entitiesPage.getContent()
         );
     }
 
-    public <T> Optional<T> executeAndEnrichOne(List<String> includePaths,
-                                               Class<T> domainClass,
-                                               JpaSpecificationExecutor<T> repository,
-                                               Function<JpaSpecificationExecutor<T>, Optional<T>> actualOperation) {
-        return executeAndEnrich(includePaths,
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public <T> void executeAndEnrichOne(List<String> includePaths,
+                                        Class<T> domainClass,
+                                        Optional<T> entity) {
+        enrich(
+                includePaths,
                 domainClass,
-                () -> actualOperation.apply(repository),
-                one -> one.map(Collections::singletonList).orElse(Collections.emptyList())
+                entity
+                        .map(Collections::singletonList)
+                        .orElse(Collections.emptyList())
         );
     }
 
     @SuppressWarnings("unchecked")
-    public <R, T> R executeAndEnrich(List<String> includePaths,
-                                     Class<T> domainClass,
-                                     Supplier<R> actualOperation,
-                                     Function<R, Collection<T>> extractor) {
+    public <T> void enrich(List<String> includePaths,
+                           Class<T> domainClass,
+                           Collection<T> entities) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()) {
             throw new RuntimeException("method must be executed within transaction");
         }
 
-        R result = actualOperation.get();
-        Collection<T> entities = extractor.apply(result);
-
         if (CollectionUtils.isEmpty(entities)) {
             log.debug("nothing to enrich");
-            return result;
+            return;
         }
-
 
         /* TODO:
          * add cache for situations like include=kittens.motherForKids,kittens.fatherForKids
@@ -122,8 +113,6 @@ public class FetchSmartTemplate {
                 path = path.next();
             }
         }
-
-        return result;
     }
 
     private <T> TypedQuery<T> getQuery(@Nullable Specification<T> spec, Class<T> domainClass) {
