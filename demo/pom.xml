@@ -29,6 +29,11 @@
         </dependency>
         <dependency>
             <groupId>com.spiashko.jpa-fetch-support</groupId>
+            <artifactId>rfetch-parser</artifactId>
+            <version>${jpa-fetch-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.spiashko.jpa-fetch-support</groupId>
             <artifactId>fetch-smart-support</artifactId>
             <version>${jpa-fetch-support.version}</version>
         </dependency>
