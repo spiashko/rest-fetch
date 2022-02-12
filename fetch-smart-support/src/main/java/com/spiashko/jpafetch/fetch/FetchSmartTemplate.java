@@ -66,8 +66,13 @@ public class FetchSmartTemplate {
             throw new RuntimeException("method must be executed within transaction");
         }
 
-        if (CollectionUtils.isEmpty(entities)) {
+        if (CollectionUtils.isEmpty(includePaths)) {
             log.debug("nothing to enrich");
+            return;
+        }
+
+        if (CollectionUtils.isEmpty(entities)) {
+            log.debug("no entities to enrich");
             return;
         }
 
