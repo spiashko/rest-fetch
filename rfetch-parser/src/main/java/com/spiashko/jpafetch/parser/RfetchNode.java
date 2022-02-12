@@ -4,10 +4,11 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @Getter
-public class RfetchNode {
+public class RfetchNode implements Iterable<RfetchNode> {
 
     private final RfetchNode parent;
 
@@ -20,6 +21,15 @@ public class RfetchNode {
         this.parent = parent;
         this.name = name;
         this.type = type;
+    }
+
+    public <R, A> R accept(RfetchVisitor<R, A> visitor, A param){
+        return visitor.visit(this, param);
+    }
+
+    @Override
+    public Iterator<RfetchNode> iterator() {
+        return leafs.iterator();
     }
 
     public void addLeaf(RfetchNode leaf) {
@@ -51,4 +61,6 @@ public class RfetchNode {
                 ", leafs=" + leafs +
                 '}';
     }
+
+
 }

@@ -4,6 +4,8 @@ import com.spiashko.jpafetch.demo.BaseApplicationTest;
 import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.demo.person.PersonRepository;
 import com.spiashko.jpafetch.fetch.FetchSmartTemplate;
+import com.spiashko.jpafetch.parser.RfetchCompiler;
+import com.spiashko.jpafetch.parser.RfetchNode;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,14 @@ class JpaManualTest extends BaseApplicationTest {
     private FetchSmartTemplate fetchSmartTemplate;
     @Autowired
     private TransactionTemplate transactionTemplate;
+
+    @Test
+    void allInOne() {
+        RfetchNode root = RfetchCompiler.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
+
+        List<Person> all = repository.findAll();
+        assertEquals(all.size(), 7);
+    }
 
 
     @Test

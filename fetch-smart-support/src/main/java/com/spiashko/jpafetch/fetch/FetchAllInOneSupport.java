@@ -1,4 +1,4 @@
-package com.spiashko.jpafetch.allinone;
+package com.spiashko.jpafetch.fetch;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyPath;
@@ -11,14 +11,14 @@ import java.util.Objects;
 
 public class FetchAllInOneSupport {
 
-    public static Specification<Object> toSpecification(List<String> includedPaths) {
+    public Specification<Object> toSpecification(List<String> includedPaths) {
         return includedPaths.stream()
-                .map(FetchAllInOneSupport::buildSpec)
+                .map(this::buildSpec)
                 .reduce(Specification.where(null),
                         Specification::and);
     }
 
-    private static Specification<Object> buildSpec(String attributePath) {
+    private Specification<Object> buildSpec(String attributePath) {
         return (root, query, builder) -> {
             PropertyPath path = PropertyPath.from(attributePath, root.getJavaType());
             FetchParent<Object, Object> f = traversePath(root, path);
@@ -30,7 +30,7 @@ public class FetchAllInOneSupport {
         };
     }
 
-    private static FetchParent<Object, Object> traversePath(FetchParent<?, ?> root, PropertyPath path) {
+    private FetchParent<Object, Object> traversePath(FetchParent<?, ?> root, PropertyPath path) {
         FetchParent<Object, Object> result = root.fetch(path.getSegment(), JoinType.LEFT);
         return path.hasNext() ? traversePath(result, Objects.requireNonNull(path.next())) : result;
     }

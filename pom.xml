@@ -22,7 +22,6 @@
         <module>jackson-support</module>
         <module>security-support</module>
         <module>fetch-smart-support</module>
-        <module>fetch-all-in-one-support</module>
         <module>rfetch-parser</module>
     </modules>
 

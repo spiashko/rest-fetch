@@ -8,8 +8,16 @@ import org.junit.jupiter.api.Test;
 public class UnitManualTest {
 
     @Test
+    void tryNewInclude_justBuild() {
+        RfetchNode root = RfetchCompiler.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
+        System.out.println(root);
+    }
+
+    @Test
     void tryNewInclude() {
         RfetchNode root = RfetchCompiler.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
+
+
         System.out.println(root);
     }
 
