@@ -6,7 +6,7 @@ import com.spiashko.jpafetch.parser.RfetchVisitor;
 import javax.persistence.criteria.FetchParent;
 import javax.persistence.criteria.JoinType;
 
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({"rawtypes", "unchecked"})
 class AllInOneRfetchVisitor implements RfetchVisitor<Void, FetchParent> {
 
     static final AllInOneRfetchVisitor INSTANCE = new AllInOneRfetchVisitor();

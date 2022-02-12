@@ -6,7 +6,7 @@ import com.spiashko.jpafetch.demo.cat.CatRepository;
 import com.spiashko.jpafetch.demo.crudbase.View;
 import com.spiashko.jpafetch.fetch.smart.FetchSmartTemplate;
 import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
-import com.spiashko.jpafetch.parser.RfetchCompiler;
+import com.spiashko.jpafetch.parser.RfetchSupport;
 import com.spiashko.jpafetch.security.JsonViewSecurityInterceptor;
 import io.github.perplexhub.rsql.RSQLCommonSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
@@ -34,14 +34,19 @@ public class CatRestController {
             @RequestParam(value = "filter", required = false) String rsqlFilter,
             @RequestParam(value = "rfetchInclude", required = false) String rfetchInclude
     ) {
-        ArrayList<String> effectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
-        interceptor.intercept(effectedPaths, Cat.class, View.Retrieve.class);
+        //rsql
+        List<String> rsqlEffectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
+        interceptor.intercept(rsqlEffectedPaths, Cat.class, View.Retrieve.class);
 
-//        IncludePathsHolder.setIncludedPaths(rfetchInclude);
+        //rfetch
+        List<String> rfetchEffectedPaths = RfetchSupport.effectedPaths(rfetchInclude, Cat.class);
+        interceptor.intercept(rsqlEffectedPaths, Cat.class, View.Retrieve.class);
+
+        IncludePathsHolder.setIncludedPaths(rfetchEffectedPaths);
 
         return transactionTemplate.execute(s -> {
             List<Cat> result = repository.findAll(RSQLJPASupport.rsql(rsqlFilter));
-            fetchSmartTemplate.enrichList(RfetchCompiler.compile(rfetchInclude, Cat.class), result);
+            fetchSmartTemplate.enrichList(RfetchSupport.compile(rfetchInclude, Cat.class), result);
             return result;
         });
     }

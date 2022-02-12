@@ -1,6 +1,8 @@
 package com.spiashko.jpafetch.parser;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class RfetchNode implements Iterable<RfetchNode> {
 
@@ -18,18 +21,8 @@ public class RfetchNode implements Iterable<RfetchNode> {
 
     private final List<RfetchNode> children = new ArrayList<>();
 
-    private RfetchNode(RfetchNode parent, String name, Class<?> type) {
-        this.parent = parent;
-        this.name = name;
-        this.type = type;
-    }
-
     public <R, A> R accept(RfetchVisitor<R, A> visitor, A param) {
         return visitor.visit(this, param);
-    }
-
-    public <R, A> R accept(RfetchVisitor<R, A> visitor) {
-        return visitor.visit(this, null);
     }
 
     @Override
@@ -67,7 +60,7 @@ public class RfetchNode implements Iterable<RfetchNode> {
                 (parent == null ? "" : "parentType=" + parent.type.getSimpleName() + ", ") +
                 "name='" + name + '\'' +
                 ", type=" + type.getSimpleName() +
-                ", leafs=" + children +
+                ", children=" + children +
                 '}';
     }
 

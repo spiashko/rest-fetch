@@ -2,7 +2,21 @@ package com.spiashko.jpafetch.parser;
 
 import org.springframework.data.mapping.PropertyPath;
 
-public class RfetchCompiler {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RfetchSupport {
+
+    public static List<String> effectedPaths(String include, Class<?> domainClass) {
+        RfetchNode root = compile(include, domainClass);
+        return effectedPaths(root);
+    }
+
+    public static List<String> effectedPaths(RfetchNode rfetchRoot) {
+        List<String> result = new ArrayList<>();
+        rfetchRoot.accept(RfetchAsListVisitor.INSTANCE, result);
+        return result;
+    }
 
     public static RfetchNode compile(String include, Class<?> domainClass) {
         RfetchNode root = RfetchNode.createRoot(domainClass);

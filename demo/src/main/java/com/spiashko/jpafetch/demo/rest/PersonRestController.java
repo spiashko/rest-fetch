@@ -1,12 +1,13 @@
 package com.spiashko.jpafetch.demo.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.spiashko.jpafetch.demo.cat.Cat;
 import com.spiashko.jpafetch.demo.crudbase.View;
 import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.demo.person.PersonRepository;
 import com.spiashko.jpafetch.fetch.smart.FetchSmartTemplate;
 import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
-import com.spiashko.jpafetch.parser.RfetchCompiler;
+import com.spiashko.jpafetch.parser.RfetchSupport;
 import com.spiashko.jpafetch.security.JsonViewSecurityInterceptor;
 import io.github.perplexhub.rsql.RSQLCommonSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
@@ -36,16 +37,21 @@ public class PersonRestController {
             @RequestParam(value = "filter", required = false) String rsqlFilter,
             @RequestParam(value = "rfetchInclude", required = false) String rfetchInclude
     ) {
-        //TODO: move it to AOP (use annotation for include RequestParam)
-        ArrayList<String> effectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
-        interceptor.intercept(effectedPaths, Person.class, View.Retrieve.class);
+        //TODO: move it to AOP
+        //rsql
+        List<String> rsqlEffectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
+        interceptor.intercept(rsqlEffectedPaths, Person.class, View.Retrieve.class);
+
+        //rfetch
+        List<String> rfetchEffectedPaths = RfetchSupport.effectedPaths(rfetchInclude, Cat.class);
+        interceptor.intercept(rsqlEffectedPaths, Person.class, View.Retrieve.class);
 
         //TODO: move it to AOP
-//        IncludePathsHolder.setIncludedPaths(rfetchInclude);
+        IncludePathsHolder.setIncludedPaths(rfetchEffectedPaths);
 
         return transactionTemplate.execute(s -> {
             List<Person> result = repository.findAll(RSQLJPASupport.rsql(rsqlFilter));
-            fetchSmartTemplate.enrichList(RfetchCompiler.compile(rfetchInclude, Person.class), result);
+            fetchSmartTemplate.enrichList(RfetchSupport.compile(rfetchInclude, Person.class), result);
             return result;
         });
     }
