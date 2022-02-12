@@ -3,18 +3,18 @@ package com.spiashko.jpafetch.demo.manual;
 import com.spiashko.jpafetch.demo.BaseApplicationTest;
 import com.spiashko.jpafetch.demo.person.Person;
 import com.spiashko.jpafetch.demo.person.PersonRepository;
-import com.spiashko.jpafetch.fetch.FetchSmartTemplate;
+import com.spiashko.jpafetch.fetch.allinone.FetchAllInOneSupport;
+import com.spiashko.jpafetch.fetch.smart.FetchSmartTemplate;
 import com.spiashko.jpafetch.parser.RfetchCompiler;
-import com.spiashko.jpafetch.parser.RfetchNode;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,9 +34,13 @@ class JpaManualTest extends BaseApplicationTest {
 
     @Test
     void allInOne() {
-        RfetchNode root = RfetchCompiler.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
+//        RfetchNode root = RfetchCompiler.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
 
-        List<Person> all = repository.findAll();
+        Specification<Person> newSpec = FetchAllInOneSupport
+                .toSpecification("(kittens(motherForKids,fatherForKids),bestFriend)");
+
+
+        List<Person> all = repository.findAll(newSpec.and(RSQLJPASupport.rsql("name==bob", true)));
         assertEquals(all.size(), 7);
     }
 
@@ -44,9 +48,11 @@ class JpaManualTest extends BaseApplicationTest {
     @Test
     void fixCartesianProductProblem() {
 
+        String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
+
         List<Person> result = transactionTemplate.execute(s -> {
-            List<Person> people = repository.findAll(RSQLJPASupport.rsql("name!=kek"));
-            fetchSmartTemplate.enrichList(Arrays.asList("bestFriendForPeople.kittens", "kittens.father"), Person.class, people);
+            List<Person> people = repository.findAll(RSQLJPASupport.rsql("name==bob"));
+            fetchSmartTemplate.enrichList(RfetchCompiler.compile(rfetch, Person.class), people);
             return people;
         });
 

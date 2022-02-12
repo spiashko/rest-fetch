@@ -15,7 +15,7 @@ import lombok.experimental.FieldNameConstants;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @FieldNameConstants
@@ -39,7 +39,7 @@ public class Person extends BaseEntity {
     @JsonView({View.Retrieve.class})
     @JsonIgnoreProperties(Cat.Fields.owner)
     @OneToMany(mappedBy = Cat.Fields.owner, fetch = FetchType.LAZY)
-    private List<Cat> kittens;
+    private Set<Cat> kittens;
 
     @JsonView({View.Retrieve.class})
     @NotNull
@@ -51,6 +51,6 @@ public class Person extends BaseEntity {
     @JsonView({View.Retrieve.class})
     @JsonIgnoreProperties(Person.Fields.bestFriend)
     @OneToMany(mappedBy = Person.Fields.bestFriend, fetch = FetchType.LAZY)
-    private List<Person> bestFriendForPeople;
+    private Set<Person> bestFriendForPeople;
 
 }

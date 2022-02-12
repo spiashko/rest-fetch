@@ -1,6 +1,6 @@
 package com.spiashko.jpafetch.demo.config;
 
-import com.spiashko.jpafetch.fetch.FetchSmartTemplate;
+import com.spiashko.jpafetch.fetch.smart.FetchSmartTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

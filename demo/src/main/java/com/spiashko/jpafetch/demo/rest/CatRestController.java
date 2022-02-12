@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.jpafetch.demo.cat.Cat;
 import com.spiashko.jpafetch.demo.cat.CatRepository;
 import com.spiashko.jpafetch.demo.crudbase.View;
-import com.spiashko.jpafetch.fetch.FetchSmartTemplate;
+import com.spiashko.jpafetch.fetch.smart.FetchSmartTemplate;
 import com.spiashko.jpafetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
+import com.spiashko.jpafetch.parser.RfetchCompiler;
 import com.spiashko.jpafetch.security.JsonViewSecurityInterceptor;
 import io.github.perplexhub.rsql.RSQLCommonSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,23 +28,20 @@ public class CatRestController {
     private final CatRepository repository;
     private final JsonViewSecurityInterceptor interceptor;
 
-    @PreAuthorize("@jsonViewSecurityInterceptor.intercept(#includePaths, " +
-            "T(com.spiashko.jpafetch.demo.cat.Cat), " +
-            "T(com.spiashko.jpafetch.demo.crudbase.View$Retrieve))")
     @JsonView(View.Retrieve.class)
     @GetMapping("/cats")
     public List<Cat> findAll(
             @RequestParam(value = "filter", required = false) String rsqlFilter,
-            @RequestParam(value = "include", required = false) List<String> includePaths
+            @RequestParam(value = "rfetchInclude", required = false) String rfetchInclude
     ) {
         ArrayList<String> effectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
         interceptor.intercept(effectedPaths, Cat.class, View.Retrieve.class);
 
-        IncludePathsHolder.setIncludedPaths(includePaths);
+//        IncludePathsHolder.setIncludedPaths(rfetchInclude);
 
         return transactionTemplate.execute(s -> {
             List<Cat> result = repository.findAll(RSQLJPASupport.rsql(rsqlFilter));
-            fetchSmartTemplate.enrichList(includePaths, Cat.class, result);
+            fetchSmartTemplate.enrichList(RfetchCompiler.compile(rfetchInclude, Cat.class), result);
             return result;
         });
     }

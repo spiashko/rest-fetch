@@ -60,7 +60,7 @@ public class RfetchCompiler {
     private static RfetchNode buildLeaf(RfetchNode parent, String propertyName) {
         Class<?> propertyType = PropertyPath.from(propertyName, parent.getType()).getType();
         RfetchNode leaf = RfetchNode.createLeaf(parent, propertyName, propertyType);
-        parent.addLeaf(leaf);
+        parent.addChild(leaf);
         return leaf;
     }
 

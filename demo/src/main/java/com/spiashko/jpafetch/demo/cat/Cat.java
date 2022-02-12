@@ -16,7 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @FieldNameConstants
@@ -68,11 +68,11 @@ public class Cat extends BaseEntity {
     @JsonIgnoreProperties({Fields.mother, Fields.father})
     @JsonView({View.Retrieve.class})
     @OneToMany(mappedBy = Fields.mother, fetch = FetchType.LAZY)
-    private List<Cat> motherForKids;
+    private Set<Cat> motherForKids;
 
     @JsonIgnoreProperties({Fields.father, Fields.mother})
     @JsonView({View.Retrieve.class})
     @OneToMany(mappedBy = Fields.father, fetch = FetchType.LAZY)
-    private List<Cat> fatherForKids;
+    private Set<Cat> fatherForKids;
 
 }

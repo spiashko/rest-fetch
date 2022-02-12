@@ -1,6 +1,7 @@
 package com.spiashko.jpafetch.parser;
 
 import lombok.Getter;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,7 @@ public class RfetchNode implements Iterable<RfetchNode> {
     private final String name;
     private final Class<?> type;
 
-    private final List<RfetchNode> leafs = new ArrayList<>();
+    private final List<RfetchNode> children = new ArrayList<>();
 
     private RfetchNode(RfetchNode parent, String name, Class<?> type) {
         this.parent = parent;
@@ -23,25 +24,33 @@ public class RfetchNode implements Iterable<RfetchNode> {
         this.type = type;
     }
 
-    public <R, A> R accept(RfetchVisitor<R, A> visitor, A param){
+    public <R, A> R accept(RfetchVisitor<R, A> visitor, A param) {
         return visitor.visit(this, param);
+    }
+
+    public <R, A> R accept(RfetchVisitor<R, A> visitor) {
+        return visitor.visit(this, null);
     }
 
     @Override
     public Iterator<RfetchNode> iterator() {
-        return leafs.iterator();
+        return children.iterator();
     }
 
-    public void addLeaf(RfetchNode leaf) {
-        leafs.add(leaf);
+    public void addChild(RfetchNode leaf) {
+        children.add(leaf);
     }
 
-    public List<RfetchNode> getLeafs() {
-        return Collections.unmodifiableList(leafs);
+    public List<RfetchNode> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 
     public boolean isRoot() {
         return parent == null;
+    }
+
+    public boolean isLeaf() {
+        return CollectionUtils.isEmpty(children);
     }
 
     static RfetchNode createLeaf(RfetchNode parent, String propertyName, Class<?> propertyType) {
@@ -58,7 +67,7 @@ public class RfetchNode implements Iterable<RfetchNode> {
                 (parent == null ? "" : "parentType=" + parent.type.getSimpleName() + ", ") +
                 "name='" + name + '\'' +
                 ", type=" + type.getSimpleName() +
-                ", leafs=" + leafs +
+                ", leafs=" + children +
                 '}';
     }
 
