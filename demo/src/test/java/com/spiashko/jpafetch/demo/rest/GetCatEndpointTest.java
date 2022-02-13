@@ -47,7 +47,7 @@ class GetCatEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "father")
+                    .queryParam("include", "(father)")
                 .when()
                     .get("/cats")
                 .then()
@@ -63,7 +63,7 @@ class GetCatEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "father")
+                    .queryParam("include", "(father)")
                     .queryParam("filter", "father.name==vasily")
                 .when()
                     .get("/cats")

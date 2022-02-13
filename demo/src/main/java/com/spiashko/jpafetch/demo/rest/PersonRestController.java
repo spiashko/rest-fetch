@@ -35,7 +35,7 @@ public class PersonRestController {
     @GetMapping
     public List<Person> findAll(
             @RequestParam(value = "filter", required = false) String rsqlFilter,
-            @RequestParam(value = "rfetchInclude", required = false) String rfetchInclude
+            @RequestParam(value = "include", required = false) String rfetchInclude
     ) {
         //TODO: move it to AOP
         //rsql
@@ -43,8 +43,8 @@ public class PersonRestController {
         interceptor.intercept(rsqlEffectedPaths, Person.class, View.Retrieve.class);
 
         //rfetch
-        List<String> rfetchEffectedPaths = RfetchSupport.effectedPaths(rfetchInclude, Cat.class);
-        interceptor.intercept(rsqlEffectedPaths, Person.class, View.Retrieve.class);
+        List<String> rfetchEffectedPaths = RfetchSupport.effectedPaths(rfetchInclude, Person.class);
+        interceptor.intercept(rfetchEffectedPaths, Person.class, View.Retrieve.class);
 
         //TODO: move it to AOP
         IncludePathsHolder.setIncludedPaths(rfetchEffectedPaths);

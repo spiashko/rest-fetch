@@ -48,7 +48,7 @@ class GetPersonEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "bestFriend")
+                    .queryParam("include", "(bestFriend)")
                 .when()
                     .get("/persons")
                 .then()
@@ -64,7 +64,7 @@ class GetPersonEndpointTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "bestFriend")
+                    .queryParam("include", "(bestFriend)")
                     .queryParam("filter", "bestFriend.name==bob")
                 .when()
                     .get("/persons")

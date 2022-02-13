@@ -29,7 +29,7 @@ class GetCatEndpointSecurityTest extends BaseApplicationTest {
         // @formatter:off
         RestAssured
                 .given()
-                    .queryParam("include", "owner")
+                    .queryParam("include", "(owner)")
                 .when()
                     .get("/cats")
                 .then()

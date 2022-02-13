@@ -32,7 +32,7 @@ public class CatRestController {
     @GetMapping("/cats")
     public List<Cat> findAll(
             @RequestParam(value = "filter", required = false) String rsqlFilter,
-            @RequestParam(value = "rfetchInclude", required = false) String rfetchInclude
+            @RequestParam(value = "include", required = false) String rfetchInclude
     ) {
         //rsql
         List<String> rsqlEffectedPaths = new ArrayList<>(RSQLCommonSupport.toComplexMultiValueMap(rsqlFilter).keySet());
@@ -40,7 +40,7 @@ public class CatRestController {
 
         //rfetch
         List<String> rfetchEffectedPaths = RfetchSupport.effectedPaths(rfetchInclude, Cat.class);
-        interceptor.intercept(rsqlEffectedPaths, Cat.class, View.Retrieve.class);
+        interceptor.intercept(rfetchEffectedPaths, Cat.class, View.Retrieve.class);
 
         IncludePathsHolder.setIncludedPaths(rfetchEffectedPaths);
 

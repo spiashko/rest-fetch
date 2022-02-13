@@ -1,5 +1,6 @@
 package com.spiashko.jpafetch.parser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mapping.PropertyPath;
 
 import java.util.ArrayList;
@@ -13,12 +14,18 @@ public class RfetchSupport {
     }
 
     public static List<String> effectedPaths(RfetchNode rfetchRoot) {
+        if (rfetchRoot == null) {
+            return null;
+        }
         List<String> result = new ArrayList<>();
         rfetchRoot.accept(RfetchAsListVisitor.INSTANCE, result);
         return result;
     }
 
     public static RfetchNode compile(String include, Class<?> domainClass) {
+        if (StringUtils.isBlank(include)) {
+            return null;
+        }
         RfetchNode root = RfetchNode.createRoot(domainClass);
         parseString(include, root);
         return root;
