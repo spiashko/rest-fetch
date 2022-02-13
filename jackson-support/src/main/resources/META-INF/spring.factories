@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.spiashko.rfetch.jacksonjpa.autoconfigure.JacksonConfiguration
