@@ -34,48 +34,47 @@ in app logs you should find corresponded sql for each request.
 
 This is something that is inspired by graphql and json:api but implemented in more simple way where you can control
 joining of relations. So with its help you can just add request param
-like `include=(relation1,relation2(nestedrelation))`
-and in the end spring data Specification will be generated which will basically include fetch join of specified
-relations which will give us additional bonus of solving N+1 problem. So in the end frontend can control amount of data
-to retrieve, and it will be always only one sql query to database regardless of amount of relations we want to include.
+like `include=(relation1,relation2(nestedrelation))`and later in controller you will have two options:
 
-**usage:**
+1. use **FetchAllInOneSpecTemplate** (example:(com/spiashko/rfetch/demo/rest/CatRestController.java:33)) which basically
+   produce spring data Specification which do fetch join so in the end we will get one sql with number of joins. So it
+   solves N+1 but worth to mention that this approach has pitfall which is well described
+   in [Vlad's post](https://vladmihalcea.com/hibernate-multiplebagfetchexception/) in short this approach leads to
+   cartesian product problem and as a consequence of this force us to use Set but this cartesian product problem is
+   fixed by our next option
+2. use **FetchSmartTemplate** (example:(com/spiashko/rfetch/demo/rest/PersonRestController.java:37)) which basically
+   solves cartesian product problem by doing only one fetch join on each level and as a consequence of this we don't
+   need to use Set. In the end this option fix N+1 and cartesian product problem, but we will have more than one sql
+   executed, particularly it will depend on number of included relations
 
-```
-    @GetMapping("/cats")
-    public List<Cat> findAll(
-            @RfetchSpec Specification<Cat> rFetchSpec
-    ) {
-        List<Cat> result = searchService.findAll(rFetchSpec);
-        return result;
-    }
-```
-
-**security:**
+#### Security
 
 With help of `JsonViewSecurityInterceptor` defined as bean we may add security which will basically depends on JsonView
 so if relation is not meant to be present, but it is present in `include` or `filter` param then this interceptor will
 throw an Exception.
+
+Example - com/spiashko/rfetch/demo/rest/BeforeRequestActionsExecutor.java:21
+
+#### Self reference resolution (only for demo use)
+
+To make response more clear in terms of included data `com.spiashko.rfetch.jacksonjpa.selfrefresolution` package was
+created as when we retrieve collection of entities which have relation to itself it leads to situation when hibernate
+autofill that relation and as result jackson also serialise them in respond, but it creates a mess in response, and it
+is not very clear response with what scope was retried so this package resolve it and serialise only what was requested.
 
 #### TODO
 
 - try to apply JSON:API concept
 - add swagger integration
 - calculated fields in jpa
-- services like repositories
 - cursor pagination
 - tests
 
 #### implementation thoughts:
 
-- JSON:API concept should be applied if we are going to include relations but if we are going to include on level of
-  aggregation root then there is no need in JSON:API concept
-- BUT looks like it will be easier to create that JSON:API wrapper anyway
+- if we are going to include on level of aggregation root then there is no need in JSON:API concept
 
-#### usage thoughts
+#### usage thoughts:
 
 - as this something that configured on each separate endpoint then it means that for some tricky case we can always
   write endpoint in our usual way with dto and other boring things
-
-Extend from SimpleJPARepository
-https://www.baeldung.com/spring-data-jpa-method-in-all-repositories
