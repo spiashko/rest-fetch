@@ -11,8 +11,8 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.spiashko.jpa-fetch-support</groupId>
-    <artifactId>jpa-fetch-support-parent</artifactId>
+    <groupId>com.spiashko.rest-fetch</groupId>
+    <artifactId>rest-fetch-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -21,7 +21,7 @@
         <module>demo</module>
         <module>jackson-support</module>
         <module>security-support</module>
-        <module>fetch-smart-support</module>
+        <module>rfetch-jpa</module>
         <module>rfetch-parser</module>
     </modules>
 

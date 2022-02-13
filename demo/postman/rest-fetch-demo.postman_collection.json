@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "b4dc124c-2d38-4657-87d9-454563a43341",
-    "name": "jpa-fetch-support-demo",
+    "name": "rest-fetch-demo",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

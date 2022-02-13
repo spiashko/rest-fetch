@@ -1,4 +1,4 @@
-### jpa-fetch-support
+### rest-fetch
 
 #### Objectives
 
@@ -15,8 +15,8 @@ extendable solution.
 in separate terminal
 
 - `cd demo/postman`
-- `newman run jpa-fetch-support-demo.postman_collection.json --folder cats --verbose`
-- `newman run jpa-fetch-support-demo.postman_collection.json --folder persons --verbose`
+- `newman run rest-fetch-demo.postman_collection.json --folder cats --verbose`
+- `newman run rest-fetch-demo.postman_collection.json --folder persons --verbose`
 
 each folder contains 4 request:
 
@@ -55,7 +55,6 @@ throw an Exception.
 
 #### TODO
 
-- need to resolve Cartesian Product problem
 - try to apply JSON:API concept
 - add swagger integration
 - calculated fields in jpa

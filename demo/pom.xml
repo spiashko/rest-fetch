@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>jpa-fetch-support-parent</artifactId>
-        <groupId>com.spiashko.jpa-fetch-support</groupId>
+        <artifactId>rest-fetch-parent</artifactId>
+        <groupId>com.spiashko.rest-fetch</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -18,7 +18,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <jpa-fetch-support.version>${parent.version}</jpa-fetch-support.version>
+        <rest-fetch.version>${parent.version}</rest-fetch.version>
     </properties>
 
     <dependencies>
@@ -28,24 +28,24 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.jpa-fetch-support</groupId>
+            <groupId>com.spiashko.rest-fetch</groupId>
             <artifactId>rfetch-parser</artifactId>
-            <version>${jpa-fetch-support.version}</version>
+            <version>${rest-fetch.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.jpa-fetch-support</groupId>
-            <artifactId>fetch-smart-support</artifactId>
-            <version>${jpa-fetch-support.version}</version>
+            <groupId>com.spiashko.rest-fetch</groupId>
+            <artifactId>rfetch-jpa</artifactId>
+            <version>${rest-fetch.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.jpa-fetch-support</groupId>
+            <groupId>com.spiashko.rest-fetch</groupId>
             <artifactId>jackson-spring-boot-starter</artifactId>
-            <version>${jpa-fetch-support.version}</version>
+            <version>${rest-fetch.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.spiashko.jpa-fetch-support</groupId>
+            <groupId>com.spiashko.rest-fetch</groupId>
             <artifactId>security-spring-boot-starter</artifactId>
-            <version>${jpa-fetch-support.version}</version>
+            <version>${rest-fetch.version}</version>
         </dependency>
 
         <dependency>
