@@ -4,9 +4,11 @@ import com.spiashko.rfetch.parser.RfetchNode;
 import org.springframework.data.jpa.domain.Specification;
 
 
-public class FetchAllInOneSupport {
+public class FetchAllInOneSpecTemplate {
 
-    public static <T> Specification<T> toSpecification(RfetchNode rfetchRoot) {
+    public static final FetchAllInOneSpecTemplate INSTANCE = new FetchAllInOneSpecTemplate();
+
+    public <T> Specification<T> toSpecification(RfetchNode rfetchRoot) {
         return (root, query, builder) -> {
             query.distinct(true);
             rfetchRoot.accept(AllInOneRfetchVisitor.INSTANCE, root);

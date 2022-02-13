@@ -1,9 +1,9 @@
-package com.spiashko.rfetch.demo.manual;
+package com.spiashko.rfetch.demo.rfetch;
 
 import com.spiashko.rfetch.demo.BaseApplicationTest;
 import com.spiashko.rfetch.demo.person.Person;
 import com.spiashko.rfetch.demo.person.PersonRepository;
-import com.spiashko.rfetch.jpa.allinone.FetchAllInOneSupport;
+import com.spiashko.rfetch.jpa.allinone.FetchAllInOneSpecTemplate;
 import com.spiashko.rfetch.jpa.smart.FetchSmartTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import org.junit.jupiter.api.Disabled;
@@ -12,17 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled
-class JpaManualTest extends BaseApplicationTest {
-
-    @PersistenceContext
-    private EntityManager entityManager;
+class RfetchJpaTest extends BaseApplicationTest {
 
     @Autowired
     private PersonRepository repository;
@@ -34,7 +28,7 @@ class JpaManualTest extends BaseApplicationTest {
     @Test
     void allInOne() {
 
-        Specification<Person> newSpec = FetchAllInOneSupport.toSpecification(
+        Specification<Person> newSpec = FetchAllInOneSpecTemplate.INSTANCE.toSpecification(
                 RfetchSupport.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class)
         );
 
@@ -42,9 +36,8 @@ class JpaManualTest extends BaseApplicationTest {
         assertEquals(all.size(), 7);
     }
 
-
     @Test
-    void fixCartesianProductProblem() {
+    void smart_fixCartesianProductProblem() {
 
         String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
 
