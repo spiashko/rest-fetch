@@ -14,9 +14,12 @@ extendable solution.
 
 in separate terminal
 
+- install newman if it is not installed yet `npm install -g newman`
+- install html reporter for newman if it is not installed yet `npm install -g newman-reporter-htmlextra`
 - `cd demo/postman`
-- `newman run rest-fetch-demo.postman_collection.json --folder cats --verbose`
-- `newman run rest-fetch-demo.postman_collection.json --folder persons --verbose`
+- `newman run rest-fetch-demo.postman_collection.json --folder cats -r htmlextra --reporter-htmlextra-export cat-report.html`
+- `newman run rest-fetch-demo.postman_collection.json --folder persons -r htmlextra --reporter-htmlextra-export person-report.html`
+- look at generated reports in files `cat-report.html` and `person-report.html`
 
 each folder contains 4 request:
 
@@ -30,7 +33,8 @@ in app logs you should find corresponded sql for each request.
 #### Rfetch
 
 This is something that is inspired by graphql and json:api but implemented in more simple way where you can control
-joining of relations. So with its help you can just add request param like `include=relation1;relation2.nestedrelation`
+joining of relations. So with its help you can just add request param
+like `include=(relation1,relation2(nestedrelation))`
 and in the end spring data Specification will be generated which will basically include fetch join of specified
 relations which will give us additional bonus of solving N+1 problem. So in the end frontend can control amount of data
 to retrieve, and it will be always only one sql query to database regardless of amount of relations we want to include.
@@ -72,9 +76,6 @@ throw an Exception.
 
 - as this something that configured on each separate endpoint then it means that for some tricky case we can always
   write endpoint in our usual way with dto and other boring things
-
-
-
 
 Extend from SimpleJPARepository
 https://www.baeldung.com/spring-data-jpa-method-in-all-repositories

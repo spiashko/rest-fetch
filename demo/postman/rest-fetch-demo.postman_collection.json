@@ -59,7 +59,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/persons?include=kittens&filter=kittens.name==scooter",
+              "raw": "{{baseUrl}}/persons?include=(kittens)&filter=kittens.name==scooter",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -69,7 +69,7 @@
               "query": [
                 {
                   "key": "include",
-                  "value": "kittens"
+                  "value": "(kittens)"
                 },
                 {
                   "key": "filter",
@@ -114,7 +114,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/persons?include=kittens.motherForKids,kittens.fatherForKids",
+              "raw": "{{baseUrl}}/persons?include=(kittens(motherForKids,fatherForKids))",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -124,7 +124,7 @@
               "query": [
                 {
                   "key": "include",
-                  "value": "kittens.motherForKids,kittens.fatherForKids"
+                  "value": "(kittens(motherForKids,fatherForKids))"
                 }
               ]
             }
@@ -266,7 +266,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/cats?filter=name==scooter&include=father",
+              "raw": "{{baseUrl}}/cats?filter=name==scooter&include=(father)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -280,7 +280,7 @@
                 },
                 {
                   "key": "include",
-                  "value": "father"
+                  "value": "(father)"
                 }
               ]
             }
@@ -372,7 +372,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/cats?include=father.fatherForKids,mother",
+              "raw": "{{baseUrl}}/cats?include=(father(fatherForKids),mother)",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -382,7 +382,7 @@
               "query": [
                 {
                   "key": "include",
-                  "value": "father.fatherForKids,mother"
+                  "value": "(father(fatherForKids),mother)"
                 }
               ]
             }

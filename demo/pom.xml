@@ -17,8 +17,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <rest-fetch.version>${parent.version}</rest-fetch.version>
+        <rest-fetch.version>${project.parent.version}</rest-fetch.version>
     </properties>
 
     <dependencies>
@@ -26,11 +25,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.spiashko.rest-fetch</groupId>
-            <artifactId>rfetch-parser</artifactId>
-            <version>${rest-fetch.version}</version>
         </dependency>
         <dependency>
             <groupId>com.spiashko.rest-fetch</groupId>
@@ -85,17 +79,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>typetools</artifactId>
-            <version>0.6.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate5</artifactId>
         </dependency>
 
         <dependency>
@@ -170,11 +153,6 @@
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-jpamodelgen</artifactId>
                             <version>${hibernate.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
                         </path>
                         <path>
                             <groupId>org.projectlombok</groupId>
