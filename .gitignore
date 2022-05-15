@@ -36,3 +36,5 @@ create.sql
 
 demo/postman/cat-report.html
 demo/postman/person-report.html
+
+trace.log

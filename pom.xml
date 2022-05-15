@@ -18,12 +18,23 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>demo</module>
-        <module>jackson-support</module>
         <module>security-support</module>
         <module>rfetch-jpa</module>
         <module>rfetch-parser</module>
     </modules>
+
+    <scm>
+        <connection>scm:git:git@github.com:spiashko/rest-fetch.git</connection>
+        <url>git@github.com:spiashko/rest-fetch</url>
+        <developerConnection>scm:git:git@github.com:spiashko/rest-fetch.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github-spiashko-rest-fetch</id>
+            <url>https://maven.pkg.github.com/spiashko/rest-fetch</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -38,6 +49,19 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>demo</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>demo</module>
+                <module>jackson-support</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -58,6 +82,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
             </plugin>
         </plugins>
     </build>

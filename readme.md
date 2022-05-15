@@ -64,10 +64,10 @@ is not very clear response with what scope was retried so this package resolve i
 
 #### TODO
 
-- try to apply JSON:API concept
-- add swagger integration
 - calculated fields in jpa
 - cursor pagination
+- try to apply JSON:API concept
+- add swagger integration
 - tests
 
 #### implementation thoughts:
