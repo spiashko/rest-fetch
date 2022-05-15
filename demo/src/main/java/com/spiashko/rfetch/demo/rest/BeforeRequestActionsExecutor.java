@@ -1,6 +1,6 @@
 package com.spiashko.rfetch.demo.rest;
 
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.core.IncludePathsHolder;
+import com.spiashko.rfetch.demo.selfrefresolution.core.IncludePathsHolder;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import com.spiashko.rfetch.security.JsonViewSecurityInterceptor;
 import io.github.perplexhub.rsql.RSQLCommonSupport;

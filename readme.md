@@ -57,7 +57,7 @@ Example - com/spiashko/rfetch/demo/rest/BeforeRequestActionsExecutor.java:21
 
 #### Self reference resolution (only for demo use)
 
-To make response more clear in terms of included data `com.spiashko.rfetch.jacksonjpa.selfrefresolution` package was
+To make response more clear in terms of included data `com.spiashko.rfetch.demo.selfrefresolution` package was
 created as when we retrieve collection of entities which have relation to itself it leads to situation when hibernate
 autofill that relation and as result jackson also serialise them in respond, but it creates a mess in response, and it
 is not very clear response with what scope was retried so this package resolve it and serialise only what was requested.

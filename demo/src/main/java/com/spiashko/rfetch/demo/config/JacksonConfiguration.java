@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.jacksonjpa.autoconfigure;
+package com.spiashko.rfetch.demo.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionConstants;
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionFilter;
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionFilterMixin;
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.core.SelfReferenceResolutionSerializer;
-import com.spiashko.rfetch.jacksonjpa.selfrefresolution.servlet.IncludePathsFilter;
+import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionConstants;
+import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionFilter;
+import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionFilterMixin;
+import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionSerializer;
+import com.spiashko.rfetch.demo.selfrefresolution.servlet.IncludePathsFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

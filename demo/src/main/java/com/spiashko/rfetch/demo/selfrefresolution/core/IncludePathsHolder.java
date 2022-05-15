@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.jacksonjpa.selfrefresolution.core;
+package com.spiashko.rfetch.demo.selfrefresolution.core;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;

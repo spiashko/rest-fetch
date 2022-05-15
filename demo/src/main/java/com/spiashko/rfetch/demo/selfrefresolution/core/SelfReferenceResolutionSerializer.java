@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.jacksonjpa.selfrefresolution.core;
+package com.spiashko.rfetch.demo.selfrefresolution.core;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;

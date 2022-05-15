@@ -53,12 +53,8 @@
     <profiles>
         <profile>
             <id>demo</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>demo</module>
-                <module>jackson-support</module>
             </modules>
         </profile>
     </profiles>

@@ -6,19 +6,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>rest-fetch-parent</artifactId>
-        <groupId>com.spiashko.rest-fetch</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.1</version>
+        <relativePath/>
     </parent>
 
+    <groupId>com.spiashko.rest-persistence</groupId>
     <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
         <rest-fetch.version>0.0.1-SNAPSHOT</rest-fetch.version>
-        <jackson-rest-fetch-support.version>0.0.1-SNAPSHOT</jackson-rest-fetch-support.version>
     </properties>
 
     <dependencies>
@@ -31,11 +33,6 @@
             <groupId>com.spiashko.rest-fetch</groupId>
             <artifactId>rfetch-jpa</artifactId>
             <version>${rest-fetch.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.spiashko.rest-fetch</groupId>
-            <artifactId>jackson-spring-boot-starter</artifactId>
-            <version>${jackson-rest-fetch-support.version}</version>
         </dependency>
         <dependency>
             <groupId>com.spiashko.rest-fetch</groupId>
@@ -98,6 +95,17 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
         </dependency>
 
         <dependency>
