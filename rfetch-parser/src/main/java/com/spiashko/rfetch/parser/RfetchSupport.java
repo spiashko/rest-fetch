@@ -33,18 +33,20 @@ public class RfetchSupport {
 
     private static int parseString(String input, RfetchNode parent) {
 
-        StringBuilder currentString = new StringBuilder();
-
-        int index = 0;
-        if (input.charAt(0) == '(') {
-            index++;
+        if (input.charAt(0) != '(') {
+            throw new IllegalArgumentException("list of filed should start with round brackets");
         }
+
+        StringBuilder currentString = new StringBuilder();
+        int index = 1; // 0 index is '('
 
         while (index < input.length()) {
             char c = input.charAt(index);
 
             if (c == ')') { // end of sublist, return
-                buildLeaf(parent, currentString.toString());
+                if (StringUtils.isNotEmpty(currentString.toString())) { //if empty then end of section - nothing to build
+                    buildLeaf(parent, currentString.toString());
+                }
                 return index + 1;
             }
 
