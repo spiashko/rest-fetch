@@ -4,6 +4,7 @@ import com.spiashko.rfetch.parser.RfetchNode;
 import com.spiashko.rfetch.parser.RfetchVisitor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.QueryHints;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
@@ -52,7 +53,8 @@ class SmartRfetchVisitor implements RfetchVisitor<Void, Collection<?>> {
         }
 
         Collection<Object> nestedObjects = new ArrayList<>();
-        for (Object e : enrichedEntities) {
+        for (Object enrichedEntity : enrichedEntities) {
+            Object e = Hibernate.unproxy(enrichedEntity); // it should be already initialized
             Field field = FieldUtils.getField(e.getClass(), childNodeName, true);
             Object nestedObject = ReflectionUtils.getField(field, e);
             if (nestedObject instanceof Collection) {
