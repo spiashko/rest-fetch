@@ -1,0 +1,43 @@
+package com.spiashko.rfetch.parser;
+
+import com.spiashko.rfetch.parser.entites.cats.Person;
+import com.spiashko.rfetch.parser.entites.courses.CourseExtraInfo;
+import com.spiashko.rfetch.parser.entites.courses.Enrollment;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class RfetchSupportTest {
+
+    @Test
+    void tryNewInclude_simple() {
+        RfetchNode root = RfetchSupport.compile("(bestFriend)", Person.class);
+        List<String> strings = RfetchSupport.effectedPaths(root);
+        assertEquals(strings.size(), 1);
+    }
+
+    @Test
+    void tryNewInclude_complex() {
+        RfetchNode root = RfetchSupport.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class);
+        List<String> strings = RfetchSupport.effectedPaths(root);
+        assertEquals(strings.size(), 3);
+    }
+
+    @Test
+    void courseExtraInfoTest() {
+        RfetchNode root = RfetchSupport.compile("(course(modules(lessons),teacher))", CourseExtraInfo.class);
+        List<String> strings = RfetchSupport.effectedPaths(root);
+        assertEquals(strings.size(), 2);
+    }
+
+    @Test
+    void enrollmentTest() {
+        RfetchNode root = RfetchSupport.compile("(course(teacher))", Enrollment.class);
+        List<String> strings = RfetchSupport.effectedPaths(root);
+        assertEquals(strings.size(), 1);
+    }
+
+
+}
