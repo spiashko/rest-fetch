@@ -1,9 +1,9 @@
-package com.spiashko.rfetch.demo.rfetch;
+package com.spiashko.rfetch.jpa;
 
-import com.spiashko.rfetch.demo.BaseApplicationTest;
-import com.spiashko.rfetch.demo.person.Person;
-import com.spiashko.rfetch.demo.person.PersonRepository;
+
 import com.spiashko.rfetch.jpa.allinone.FetchAllInOneSpecTemplate;
+import com.spiashko.rfetch.jpa.configs.cats.entites.Person;
+import com.spiashko.rfetch.jpa.configs.cats.repos.PersonRepository;
 import com.spiashko.rfetch.jpa.smart.FetchSmartTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import org.junit.jupiter.api.Test;
