@@ -1,7 +1,6 @@
 package com.spiashko.rfetch.parser;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.mapping.PropertyPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,30 +44,26 @@ public class RfetchSupport {
 
             if (c == ')') { // end of sublist, return
                 if (StringUtils.isNotEmpty(currentString.toString())) { //if empty then end of section - nothing to build
-                    buildLeaf(parent, currentString.toString());
+                    parent.addChild(currentString.toString());
                 }
                 return index + 1;
             }
 
             if (c == '(') { // start of sublist, recursive call
-                RfetchNode leaf = buildLeaf(parent, currentString.toString());
+                RfetchNode child = parent.addChild(currentString.toString());
                 currentString.delete(0, currentString.length());
 
-                int temp = parseString(input.substring(index), leaf);
+                int temp = parseString(input.substring(index), child);
                 index += temp;
 
-                index++;
                 continue;
             }
 
             if (c == ',') { // end of property entry, add to parent
-                if (input.charAt(index - 1) == ')') {
-                    index++;
-                    continue;
+                if (StringUtils.isNotEmpty(currentString.toString())) { //if empty then end of section - nothing to build
+                    parent.addChild(currentString.toString());
+                    currentString.delete(0, currentString.length());
                 }
-
-                buildLeaf(parent, currentString.toString());
-                currentString.delete(0, currentString.length());
 
                 index++;
                 continue;
@@ -79,12 +74,4 @@ public class RfetchSupport {
         }
         return 0;
     }
-
-    private static RfetchNode buildLeaf(RfetchNode parent, String propertyName) {
-        Class<?> propertyType = PropertyPath.from(propertyName, parent.getType()).getType();
-        RfetchNode leaf = RfetchNode.createLeaf(parent, propertyName, propertyType);
-        parent.addChild(leaf);
-        return leaf;
-    }
-
 }

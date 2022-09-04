@@ -7,14 +7,14 @@ import org.springframework.util.CollectionUtils;
 
 
 @Slf4j
-public class FetchAllInOneSpecTemplate {
+public class AllInOneFetchTemplate {
 
-    public static final FetchAllInOneSpecTemplate INSTANCE = new FetchAllInOneSpecTemplate();
+    public static final AllInOneFetchTemplate INSTANCE = new AllInOneFetchTemplate();
 
-    public <T> Specification<T> toSpecification(RfetchNode rfetchRoot) {
+    public <T> Specification<T> toFetchSpecification(RfetchNode rfetchRoot) {
         if (rfetchRoot == null || CollectionUtils.isEmpty(rfetchRoot.getChildren())) {
             log.debug("no additional fetch is requested");
-            return null;
+            return (root, query, builder) -> null;
         }
         return (root, query, builder) -> {
             query.distinct(true);

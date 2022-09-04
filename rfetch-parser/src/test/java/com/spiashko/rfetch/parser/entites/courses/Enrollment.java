@@ -36,4 +36,7 @@ public class Enrollment implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User student;
 
+    @Transient
+    private Long progress;
+
 }

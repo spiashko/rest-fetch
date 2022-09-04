@@ -8,7 +8,6 @@ import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.UUID;
 
 @FieldNameConstants
 @Getter

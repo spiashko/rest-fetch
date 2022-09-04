@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mapping.PropertyPath;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -13,32 +14,21 @@ import java.util.*;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class RfetchNode implements Iterable<RfetchNode>, Cloneable {
+public class RfetchNode implements Iterable<RfetchNode> {
 
     private final RfetchNode parent;
     private final String name;
     private final Class<?> type;
-    private final Annotation[] annotations;
+    private final List<Annotation> annotations;
     private final List<RfetchNode> children;
 
-    static RfetchNode createLeaf(RfetchNode parent, String propertyName, Class<?> propertyType) {
-        Annotation[] annotations = ReflectionUtils.findRequiredField(parent.getType(), propertyName).getAnnotations();
-        return RfetchNode.builder()
-                .parent(parent)
-                .name(propertyName)
-                .type(propertyType)
-                .annotations(annotations)
-                .children(new ArrayList<>())
-                .build();
-    }
-
-    static RfetchNode createRoot(Class<?> domainClass) {
+    public static RfetchNode createRoot(Class<?> domainClass) {
         return RfetchNode.builder()
                 .parent(null)
                 .name("root")
                 .type(domainClass)
-                .annotations(new Annotation[0])
-                .children(new ArrayList<>())
+                .annotations(new ArrayList<>())
+                .children(new LinkedList<>())
                 .build();
     }
 
@@ -51,12 +41,51 @@ public class RfetchNode implements Iterable<RfetchNode>, Cloneable {
         return children.iterator();
     }
 
-    public void addChild(RfetchNode leaf) {
-        children.add(leaf);
+    public RfetchNode addChild(String propertyName) {
+        Class<?> propertyType = PropertyPath.from(propertyName, this.getType()).getType();
+        Annotation[] annotations = ReflectionUtils.findRequiredField(this.getType(), propertyName).getAnnotations();
+        RfetchNode child = RfetchNode.builder()
+                .parent(this)
+                .name(propertyName)
+                .type(propertyType)
+                .annotations(Arrays.asList(annotations))
+                .children(new LinkedList<>())
+                .build();
+
+        children.add(child);
+        return child;
+    }
+
+    public void merge(RfetchNode anotherNode) {
+        if (!this.getType().equals(anotherNode.getType())) {
+            throw new RuntimeException("you can merge only with the same type");
+        }
+
+        for (RfetchNode anotherNodeChild : anotherNode) {
+            RfetchNode child = this.getChildren().stream()
+                    .filter(n -> n.getName().equals(anotherNodeChild.getName()))
+                    .findAny()
+                    .orElse(null);
+            if (child == null) {
+                this.addChild(anotherNodeChild);
+                continue;
+            }
+
+            child.merge(anotherNodeChild);
+        }
+    }
+
+    public void addChild(RfetchNode child) {
+        RfetchNode clone = child.deepClone(this);
+        children.add(clone);
     }
 
     public List<RfetchNode> getChildren() {
         return Collections.unmodifiableList(children);
+    }
+
+    public List<Annotation> getAnnotations() {
+        return Collections.unmodifiableList(annotations);
     }
 
     public boolean isRoot() {
@@ -77,20 +106,23 @@ public class RfetchNode implements Iterable<RfetchNode>, Cloneable {
                 '}';
     }
 
-    @Override
-    public RfetchNode clone() {
+    public RfetchNode deepClone(RfetchNode newParent) {
+        RfetchNode cloned = cloneWithoutChildren(newParent);
 
-        List<RfetchNode> children = new ArrayList<>();
         for (RfetchNode child : this) {
-            children.add(child.clone());
+            cloned.addChild(child);
         }
 
+        return cloned;
+    }
+
+    public RfetchNode cloneWithoutChildren(RfetchNode newParent) {
         return RfetchNode.builder()
-                .parent(this.getParent())
+                .parent(newParent)
                 .name(this.getName())
                 .type(this.getType())
                 .annotations(this.getAnnotations())
-                .children(children)
+                .children(new LinkedList<>())
                 .build();
     }
 }

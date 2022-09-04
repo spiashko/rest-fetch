@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.rfetch.demo.cat.Cat;
 import com.spiashko.rfetch.demo.cat.CatRepository;
 import com.spiashko.rfetch.demo.crudbase.View;
-import com.spiashko.rfetch.jpa.allinone.FetchAllInOneSpecTemplate;
+import com.spiashko.rfetch.jpa.allinone.AllInOneFetchTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class CatRestController {
     ) {
         beforeRequestActionsExecutor.execute(rsqlFilter, rfetchInclude, Cat.class, View.Retrieve.class);
 
-        Specification<Cat> fetchSpec = FetchAllInOneSpecTemplate.INSTANCE.toSpecification(RfetchSupport.compile(rfetchInclude, Cat.class));
+        Specification<Cat> fetchSpec = AllInOneFetchTemplate.INSTANCE.toFetchSpecification(RfetchSupport.compile(rfetchInclude, Cat.class));
 
         return repository.findAll(Specification.where(fetchSpec).and(RSQLJPASupport.rsql(rsqlFilter)));
     }

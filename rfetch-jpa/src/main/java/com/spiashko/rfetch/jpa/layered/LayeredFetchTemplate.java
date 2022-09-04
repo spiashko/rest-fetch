@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.jpa.smart;
+package com.spiashko.rfetch.jpa.layered;
 
 import com.spiashko.rfetch.parser.RfetchNode;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FetchSmartTemplate {
+public class LayeredFetchTemplate {
 
     private final EntityManager em;
 
@@ -48,7 +48,7 @@ public class FetchSmartTemplate {
             return;
         }
 
-        rfetchRoot.accept(new SmartRfetchVisitor(em), rootEntities);
+        rfetchRoot.accept(new LayeredRfetchVisitor(em), rootEntities);
 
     }
 }

@@ -1,10 +1,11 @@
 package com.spiashko.rfetch.jpa;
 
 
-import com.spiashko.rfetch.jpa.allinone.FetchAllInOneSpecTemplate;
+import com.spiashko.rfetch.jpa.allinone.AllInOneFetchTemplate;
 import com.spiashko.rfetch.jpa.configs.cats.entites.Person;
 import com.spiashko.rfetch.jpa.configs.cats.repos.PersonRepository;
-import com.spiashko.rfetch.jpa.smart.FetchSmartTemplate;
+import com.spiashko.rfetch.jpa.layered.LayeredFetchTemplate;
+import com.spiashko.rfetch.jpa.smart.SmartFetchTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,16 @@ class RfetchJpaTest extends BaseApplicationTest {
     @Autowired
     private PersonRepository repository;
     @Autowired
-    private FetchSmartTemplate fetchSmartTemplate;
+    private LayeredFetchTemplate layeredFetchTemplate;
+    @Autowired
+    private SmartFetchTemplate smartFetchTemplate;
     @Autowired
     private TransactionTemplate transactionTemplate;
 
     @Test
     void allInOne() {
 
-        Specification<Person> newSpec = FetchAllInOneSpecTemplate.INSTANCE.toSpecification(
+        Specification<Person> newSpec = AllInOneFetchTemplate.INSTANCE.toFetchSpecification(
                 RfetchSupport.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class)
         );
 
@@ -38,18 +41,46 @@ class RfetchJpaTest extends BaseApplicationTest {
     }
 
     @Test
-    void smart_fixCartesianProductProblem() {
+    void layered_fixCartesianProductProblem() {
 
         String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
 
         List<Person> all = transactionTemplate.execute(s -> {
             List<Person> people = repository.findAll();
-            fetchSmartTemplate.enrichList(RfetchSupport.compile(rfetch, Person.class), people);
+            layeredFetchTemplate.enrichList(RfetchSupport.compile(rfetch, Person.class), people);
             return people;
         });
 
         //noinspection ConstantConditions
         assertResult(all);
+    }
+
+    @Test
+    void smart_combineBoth() {
+
+        String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
+
+        List<Person> all = transactionTemplate.execute(s -> {
+            List<Person> objects = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
+            return objects;
+        });
+
+        //noinspection ConstantConditions
+        assertResult(all);
+    }
+
+    @Test
+    void smart_combineBoth2() {
+
+        String rfetch = "(kittens(mother,father),bestFriend)";
+
+        List<Person> all = transactionTemplate.execute(s -> {
+            List<Person> objects = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
+            return objects;
+        });
+
+        //noinspection ConstantConditions
+        assertResult2(all);
     }
 
     private void assertResult(List<Person> all) {
@@ -59,6 +90,17 @@ class RfetchJpaTest extends BaseApplicationTest {
             p.getKittens().forEach(k -> {
                 k.getMotherForKids();
                 k.getFatherForKids();
+            });
+        });
+    }
+
+    private void assertResult2(List<Person> all) {
+        assertEquals(all.size(), 7);
+        all.forEach(p -> {
+            p.getBestFriend();
+            p.getKittens().forEach(k -> {
+                k.getMother();
+                k.getFather();
             });
         });
     }

@@ -1,6 +1,7 @@
 package com.spiashko.rfetch.jpa.configs;
 
-import com.spiashko.rfetch.jpa.smart.FetchSmartTemplate;
+import com.spiashko.rfetch.jpa.layered.LayeredFetchTemplate;
+import com.spiashko.rfetch.jpa.smart.SmartFetchTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,8 +12,12 @@ import javax.persistence.EntityManager;
 public class GeneralConfig {
 
     @Bean
-    public FetchSmartTemplate fetchSmartTemplate(EntityManager entityManager) {
-        return new FetchSmartTemplate(entityManager);
+    public LayeredFetchTemplate layeredFetchTemplate(EntityManager entityManager) {
+        return new LayeredFetchTemplate(entityManager);
     }
 
+    @Bean
+    public SmartFetchTemplate smartFetchTemplate(EntityManager entityManager) {
+        return new SmartFetchTemplate(entityManager);
+    }
 }

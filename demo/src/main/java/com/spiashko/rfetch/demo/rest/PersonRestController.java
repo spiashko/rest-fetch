@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.spiashko.rfetch.demo.crudbase.View;
 import com.spiashko.rfetch.demo.person.Person;
 import com.spiashko.rfetch.demo.person.PersonRepository;
-import com.spiashko.rfetch.jpa.smart.FetchSmartTemplate;
+import com.spiashko.rfetch.jpa.layered.LayeredFetchTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PersonRestController {
 
     private final TransactionTemplate transactionTemplate;
-    private final FetchSmartTemplate fetchSmartTemplate;
+    private final LayeredFetchTemplate layeredFetchTemplate;
     private final PersonRepository repository;
     private final BeforeRequestActionsExecutor beforeRequestActionsExecutor;
 
@@ -36,7 +36,7 @@ public class PersonRestController {
 
         return transactionTemplate.execute(s -> {
             List<Person> result = repository.findAll(RSQLJPASupport.rsql(rsqlFilter));
-            fetchSmartTemplate.enrichList(RfetchSupport.compile(rfetchInclude, Person.class), result);
+            layeredFetchTemplate.enrichList(RfetchSupport.compile(rfetchInclude, Person.class), result);
             return result;
         });
     }
