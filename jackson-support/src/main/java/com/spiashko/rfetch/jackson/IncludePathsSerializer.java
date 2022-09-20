@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.demo.selfrefresolution.core;
+package com.spiashko.rfetch.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
@@ -8,19 +8,20 @@ import com.fasterxml.jackson.databind.ser.impl.PropertySerializerMap;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.persistence.Entity;
-import java.lang.reflect.Method;
+import javax.persistence.Id;
+import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Objects;
 
 
 @Slf4j
 @RequiredArgsConstructor
-public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
+public class IncludePathsSerializer extends JsonSerializer<Object>
         implements ContextualSerializer, ResolvableSerializer {
 
     private final JsonSerializer<Object> defaultSerializer;
@@ -37,24 +38,20 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
                     .serializer;
         }
 
-        if (!beanDescription.getClassInfo().hasAnnotation(Entity.class)) {
+        if (!beanDescription.getClassInfo().hasAnnotation(Entity.class) ||
+                shouldSerAsUsual(value, gen)) {
             defaultSerializer.serialize(value, gen, serializers);
             return;
         }
 
-        if (shouldSerAsUsual(value, gen)) {
-            defaultSerializer.serialize(value, gen, serializers);
-        } else { // ser only id
-            Class<?> beanClass = beanDescription.getBeanClass();
-            //TODO: remove hardcoded method
-            Method getId = ReflectionUtils.findMethod(beanClass, "getId");
-            Object id = Objects.requireNonNull(getId).invoke(value);
-
-            HashMap<String, Object> map = new HashMap<>();
-            //TODO: remove hardcoded id property name
-            map.put("id", id);
-            mapSerializer.serialize(map, gen, serializers);
-        }
+        // ser only id
+        Class<?> beanClass = beanDescription.getBeanClass();
+        Field field = FieldUtils.getFieldsWithAnnotation(beanClass, Id.class)[0];
+        ReflectionUtils.makeAccessible(field);
+        Object id = ReflectionUtils.getField(field, value);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(field.getName(), id);
+        mapSerializer.serialize(map, gen, serializers);
     }
 
     @SuppressWarnings("unchecked")
@@ -64,7 +61,7 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
         if (del == defaultSerializer) {
             return this;
         }
-        return new SelfReferenceResolutionSerializer((JsonSerializer<Object>) del, beanDescription);
+        return new IncludePathsSerializer((JsonSerializer<Object>) del, beanDescription);
     }
 
     @Override
@@ -81,7 +78,7 @@ public class SelfReferenceResolutionSerializer extends JsonSerializer<Object>
             return true;
         }
 
-        String pathToTest = SelfReferenceResolutionUtils.getPathToTest(jgen);
+        String pathToTest = IncludePathsUtils.getPathToTest(jgen);
         //it is root therefore we pass to let serialization of entity be started
         if ("".equals(pathToTest)) {
             return true;

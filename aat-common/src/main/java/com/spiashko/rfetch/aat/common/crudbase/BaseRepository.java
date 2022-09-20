@@ -1,7 +1,6 @@
-package com.spiashko.rfetch.jpa.configs.cats.repos;
+package com.spiashko.rfetch.aat.common.crudbase;
 
 
-import com.spiashko.rfetch.jpa.configs.cats.entites.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;

@@ -1,6 +1,8 @@
 package com.spiashko.rfetch.security;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.spiashko.rfetch.parser.RfetchNode;
+import com.spiashko.rfetch.parser.RfetchSupport;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
@@ -14,6 +16,12 @@ import java.util.stream.Stream;
 
 
 public class JsonViewSecurityInterceptor {
+
+    @SneakyThrows
+    public boolean intercept(RfetchNode root, Class<?> entityClass, Class<?> responseJsonView) {
+        List<String> effectedPaths = RfetchSupport.effectedPaths(root);
+        return intercept(effectedPaths, entityClass, responseJsonView);
+    }
 
     @SneakyThrows
     public boolean intercept(List<String> effectedPaths, Class<?> entityClass, Class<?> responseJsonView) {

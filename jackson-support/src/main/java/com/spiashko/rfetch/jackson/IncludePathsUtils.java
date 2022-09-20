@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.demo.selfrefresolution.core;
+package com.spiashko.rfetch.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonStreamContext;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class SelfReferenceResolutionUtils {
+public class IncludePathsUtils {
 
     public static String getPathToTest(final JsonGenerator jgen) {
         StringBuilder nestedPath = new StringBuilder();

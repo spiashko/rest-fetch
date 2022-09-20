@@ -1,6 +1,9 @@
-package com.spiashko.rfetch.jpa.configs.cats.entites;
+package com.spiashko.rfetch.aat.common.cat;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.spiashko.rfetch.aat.common.crudbase.BaseEntity;
+import com.spiashko.rfetch.aat.common.person.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +13,6 @@ import lombok.experimental.FieldNameConstants;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @FieldNameConstants
 @Getter
@@ -30,6 +32,7 @@ public class Cat extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     @Column(name = "dob")
     private LocalDate dob;
 

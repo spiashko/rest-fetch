@@ -1,5 +1,7 @@
-package com.spiashko.rfetch.demo.selfrefresolution.core;
+package com.spiashko.rfetch.jackson;
 
+import com.spiashko.rfetch.parser.RfetchNode;
+import com.spiashko.rfetch.parser.RfetchSupport;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.val;
@@ -16,6 +18,11 @@ public class IncludePathsHolder {
         return Optional.ofNullable(threadLocal.get())
                 .map(ValueContainer::getIncludedPaths)
                 .orElse(null);
+    }
+
+    public static void setIncludedPaths(RfetchNode root) {
+        List<String> includedPaths = RfetchSupport.effectedPaths(root);
+        setIncludedPaths(includedPaths);
     }
 
     public static void setIncludedPaths(List<String> includedPaths) {

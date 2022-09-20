@@ -1,13 +1,11 @@
-package com.spiashko.rfetch.jpa.configs.cats.entites;
+package com.spiashko.rfetch.aat.common.crudbase;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
 import javax.persistence.Transient;
-import java.util.UUID;
 
 @Getter
 @Setter

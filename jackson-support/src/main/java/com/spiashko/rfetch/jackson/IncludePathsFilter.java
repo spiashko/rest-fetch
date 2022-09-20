@@ -1,4 +1,4 @@
-package com.spiashko.rfetch.demo.selfrefresolution.core;
+package com.spiashko.rfetch.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -17,7 +17,9 @@ import java.lang.annotation.Annotation;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
+public class IncludePathsFilter extends SimpleBeanPropertyFilter {
+
+    public static final String NAME = "includePathsFilter";
 
     @SuppressWarnings("unchecked")
     private static final Class<? extends Annotation>[] TO_MANY_ANNOTATIONS = (Class<? extends Annotation>[])
@@ -51,7 +53,7 @@ public class SelfReferenceResolutionFilter extends SimpleBeanPropertyFilter {
     }
 
     protected boolean shouldSer(final PropertyWriter writer, final JsonGenerator jgen) {
-        String pathToTest = SelfReferenceResolutionUtils.getPathToTest(writer, jgen);
+        String pathToTest = IncludePathsUtils.getPathToTest(writer, jgen);
 
         AnnotatedMember member = writer.getMember();
 

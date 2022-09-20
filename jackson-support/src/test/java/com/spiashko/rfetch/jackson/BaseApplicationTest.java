@@ -1,7 +1,7 @@
-package com.spiashko.rfetch.jpa;
+package com.spiashko.rfetch.jackson;
 
 import com.spiashko.rfetch.aat.common.AatBasePackageMarker;
-import com.spiashko.rfetch.jpa.configs.GeneralConfig;
+import com.spiashko.rfetch.jackson.configs.GeneralConfig;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;

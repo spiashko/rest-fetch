@@ -1,9 +1,9 @@
 package com.spiashko.rfetch.jpa;
 
 
+import com.spiashko.rfetch.aat.common.person.Person;
+import com.spiashko.rfetch.aat.common.person.PersonRepository;
 import com.spiashko.rfetch.jpa.allinone.AllInOneFetchTemplate;
-import com.spiashko.rfetch.jpa.configs.cats.entites.Person;
-import com.spiashko.rfetch.jpa.configs.cats.repos.PersonRepository;
 import com.spiashko.rfetch.jpa.layered.LayeredFetchTemplate;
 import com.spiashko.rfetch.jpa.smart.SmartFetchTemplate;
 import com.spiashko.rfetch.parser.RfetchSupport;
@@ -60,12 +60,8 @@ class RfetchJpaTest extends BaseApplicationTest {
 
         String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
 
-        List<Person> all = transactionTemplate.execute(s -> {
-            List<Person> objects = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
-            return objects;
-        });
+        List<Person> all = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
 
-        //noinspection ConstantConditions
         assertResult(all);
     }
 
@@ -74,12 +70,8 @@ class RfetchJpaTest extends BaseApplicationTest {
 
         String rfetch = "(kittens(mother,father),bestFriend)";
 
-        List<Person> all = transactionTemplate.execute(s -> {
-            List<Person> objects = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
-            return objects;
-        });
+        List<Person> all = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
 
-        //noinspection ConstantConditions
         assertResult2(all);
     }
 

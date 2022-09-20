@@ -1,6 +1,6 @@
 package com.spiashko.rfetch.demo.selfrefresolution.servlet;
 
-import com.spiashko.rfetch.demo.selfrefresolution.core.IncludePathsHolder;
+import com.spiashko.rfetch.jackson.IncludePathsHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;

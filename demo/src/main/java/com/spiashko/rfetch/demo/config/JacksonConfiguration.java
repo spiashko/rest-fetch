@@ -1,19 +1,10 @@
 package com.spiashko.rfetch.demo.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionConstants;
-import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionFilter;
-import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionFilterMixin;
-import com.spiashko.rfetch.demo.selfrefresolution.core.SelfReferenceResolutionSerializer;
-import com.spiashko.rfetch.demo.selfrefresolution.servlet.IncludePathsFilter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.spiashko.rfetch.demo.selfrefresolution.servlet.CleanIncludePathsFilter;
+import com.spiashko.rfetch.jackson.IncludePathsFilter;
+import com.spiashko.rfetch.jackson.IncludePathsFilterMixin;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -26,51 +17,28 @@ import java.util.EnumSet;
 @Configuration
 public class JacksonConfiguration {
 
-    @ConditionalOnMissingBean
-    @Bean
-    public Hibernate5Module hibernate5Module() {
-        Hibernate5Module module = new Hibernate5Module();
-        module.enable(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
-        module.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
-        return module;
-    }
-
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         return builder -> builder.serializationInclusion(JsonInclude.Include.NON_DEFAULT);
     }
 
     @Bean
-    public SimpleModule selfReferenceResolutionSerializerModule() {
-        SimpleModule module = new SimpleModule("selfReferenceResolverSerializerModule");
-        module.setSerializerModifier(new BeanSerializerModifier() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription beanDesc, JsonSerializer<?> originalSerializer) {
-                return new SelfReferenceResolutionSerializer((JsonSerializer<Object>) originalSerializer, beanDesc);
-            }
-        });
-        return module;
-    }
-
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer addSelfReferenceResolutionFilterCustomizer() {
+    public Jackson2ObjectMapperBuilderCustomizer addIncludePathsFilterCustomizer() {
         return builder -> {
             builder.filters(new SimpleFilterProvider()
-                    .addFilter(SelfReferenceResolutionConstants.SELF_REFERENCE_RESOLUTION_FILTER,
-                            new SelfReferenceResolutionFilter()));
-            builder.mixIn(Object.class, SelfReferenceResolutionFilterMixin.class);
+                    .addFilter(IncludePathsFilter.NAME, new IncludePathsFilter()));
+            builder.mixIn(Object.class, IncludePathsFilterMixin.class);
         };
     }
 
     @Bean
-    public IncludePathsFilter includePathsFilter() {
-        return new IncludePathsFilter();
+    public CleanIncludePathsFilter cleanIncludePathsFilter() {
+        return new CleanIncludePathsFilter();
     }
 
     @Bean
-    public FilterRegistrationBean<IncludePathsFilter> includePathsFilterRegistrationBean(IncludePathsFilter includePathsFilter) {
-        FilterRegistrationBean<IncludePathsFilter> registration = new FilterRegistrationBean<>(includePathsFilter);
+    public FilterRegistrationBean<CleanIncludePathsFilter> includePathsFilterRegistrationBean(CleanIncludePathsFilter cleanIncludePathsFilter) {
+        FilterRegistrationBean<CleanIncludePathsFilter> registration = new FilterRegistrationBean<>(cleanIncludePathsFilter);
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         registration
                 .setName("includePathsFilter");

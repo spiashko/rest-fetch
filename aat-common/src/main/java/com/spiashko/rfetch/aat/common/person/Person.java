@@ -1,5 +1,7 @@
-package com.spiashko.rfetch.jpa.configs.cats.entites;
+package com.spiashko.rfetch.aat.common.person;
 
+import com.spiashko.rfetch.aat.common.crudbase.BaseEntity;
+import com.spiashko.rfetch.aat.common.cat.Cat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +38,5 @@ public class Person extends BaseEntity {
 
     @OneToMany(mappedBy = Fields.bestFriend, fetch = FetchType.LAZY)
     private Set<Person> bestFriendForPeople;
-
-    @Transient
-    private Long calculatedField;
 
 }
