@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-public class IncludePathsFilter extends GenericFilterBean {
+public class CleanIncludePathsFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

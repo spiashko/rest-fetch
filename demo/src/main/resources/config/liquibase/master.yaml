@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: config/liquibase/scripts/001_initial_tables_creation.sql
+      relativeToChangelogFile: false
+      errorIfMissingOrEmpty: true
