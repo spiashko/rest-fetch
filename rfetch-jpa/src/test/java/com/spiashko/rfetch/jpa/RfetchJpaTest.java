@@ -3,6 +3,7 @@ package com.spiashko.rfetch.jpa;
 
 import com.spiashko.rfetch.aat.common.person.Person;
 import com.spiashko.rfetch.aat.common.person.PersonRepository;
+import com.spiashko.rfetch.aat.common.person.Person_;
 import com.spiashko.rfetch.jpa.allinone.AllInOneFetchTemplate;
 import com.spiashko.rfetch.jpa.layered.LayeredFetchTemplate;
 import com.spiashko.rfetch.jpa.smart.SmartFetchTemplate;
@@ -31,13 +32,31 @@ class RfetchJpaTest extends BaseApplicationTest {
     @Test
     void allInOne() {
 
-        Specification<Person> newSpec = AllInOneFetchTemplate.INSTANCE.toFetchSpecification(
+        Specification<Person> spec = AllInOneFetchTemplate.INSTANCE.toFetchSpecification(
                 RfetchSupport.compile("(kittens(motherForKids,fatherForKids),bestFriend)", Person.class)
         );
 
-        List<Person> all = repository.findAll(newSpec);
+        List<Person> all = repository.findAll(spec);
 
         assertResult(all);
+    }
+
+    @Test
+    void allInOneWithFilter() {
+
+        Specification<Person> fetchSpec = AllInOneFetchTemplate.INSTANCE.toFetchSpecification(
+                RfetchSupport.compile("(bestFriendForPeople)", Person.class)
+        );
+
+        Specification<Person> filterSpec = (r, qb, cb) ->
+                cb.equal(r.join(Person_.bestFriendForPeople).get(Person_.name), cb.literal("bob"));
+
+        Specification<Person> spec = Specification.where(fetchSpec).and(filterSpec);
+
+        List<Person> all = repository.findAll(spec);
+
+        assertEquals(all.size(), 1);
+        assertEquals(all.get(0).getBestFriendForPeople().size(), 2);
     }
 
     @Test
@@ -60,7 +79,9 @@ class RfetchJpaTest extends BaseApplicationTest {
 
         String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
 
-        List<Person> all = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
+        List<Person> all = transactionTemplate.execute(s ->
+                smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class), repository, null)
+        );
 
         assertResult(all);
     }
@@ -70,7 +91,9 @@ class RfetchJpaTest extends BaseApplicationTest {
 
         String rfetch = "(kittens(mother,father),bestFriend)";
 
-        List<Person> all = smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class));
+        List<Person> all = transactionTemplate.execute(s ->
+                smartFetchTemplate.fetchList(RfetchSupport.compile(rfetch, Person.class), repository, null)
+        );
 
         assertResult2(all);
     }
@@ -80,8 +103,8 @@ class RfetchJpaTest extends BaseApplicationTest {
         all.forEach(p -> {
             p.getBestFriend();
             p.getKittens().forEach(k -> {
-                k.getMotherForKids();
-                k.getFatherForKids();
+                k.getMotherForKids().size();
+                k.getFatherForKids().size();
             });
         });
     }

@@ -1,5 +1,6 @@
 package com.spiashko.rfetch.jpa.layered;
 
+import com.spiashko.rfetch.jpa.ObjectUtils;
 import com.spiashko.rfetch.parser.RfetchNode;
 import com.spiashko.rfetch.parser.RfetchVisitor;
 import lombok.RequiredArgsConstructor;
@@ -43,25 +44,14 @@ class LayeredRfetchVisitor implements RfetchVisitor<Void, Collection<?>> {
     private void processChild(RfetchNode node, Collection<?> entities, RfetchNode child) {
         String childNodeName = child.getName();
 
-        //actual work is done here
-        Collection<Object> enrichedEntities = getQuery((Collection) entities, node.getType(), childNodeName).getResultList();
+        Collection<Object> enrichedEntities = getQuery((Collection) entities, node.getType(), childNodeName)
+                .getResultList();
 
         if (child.isLeaf()) {
             return;
         }
 
-        Collection<Object> nestedObjects = new HashSet<>();
-        for (Object enrichedEntity : enrichedEntities) {
-            Object e = Hibernate.unproxy(enrichedEntity); // it should be already initialized
-            Field field = FieldUtils.getField(e.getClass(), childNodeName, true);
-            Object nestedObject = ReflectionUtils.getField(field, e);
-            if (nestedObject instanceof Collection) {
-                nestedObjects.addAll((Collection<Object>) nestedObject);
-            } else {
-                nestedObjects.add(nestedObject);
-            }
-        }
-
+        Collection<Object> nestedObjects = ObjectUtils.extractNestedObjects(enrichedEntities, childNodeName);
         child.accept(this, nestedObjects);
     }
 

@@ -1,53 +1,38 @@
 package com.spiashko.rfetch.jpa.smart;
 
+import com.spiashko.rfetch.jpa.ObjectUtils;
 import com.spiashko.rfetch.parser.RfetchNode;
 import com.spiashko.rfetch.parser.RfetchVisitor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.QueryHints;
 import org.springframework.lang.Nullable;
-import org.springframework.util.ReflectionUtils;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 @Slf4j
-@SuppressWarnings({"rawtypes", "unchecked"})
-class SmartRfetchVisitor implements RfetchVisitor<List<?>, Void> {
+class SmartRfetchVisitor implements RfetchVisitor<Void, Void> {
 
     private final EntityManager em;
-
-    private final Map<NodeKey, Set<?>> fetchedObjects = new HashMap<>();
     private final Map<NodeKey, List<RfetchNode>> subFetches;
+    private final Map<NodeKey, Set<?>> fetchedObjects = new HashMap<>();
 
-    public SmartRfetchVisitor(EntityManager em, RfetchNode root) {
+    public SmartRfetchVisitor(EntityManager em,
+                              Map<NodeKey, List<RfetchNode>> subFetches,
+                              RfetchNode root, RfetchNode initialSubFetch,
+                              List<?> initialObjects) {
         this.em = em;
-        SubFetchesBuilder subFetchesBuilder = new SubFetchesBuilder();
-        RfetchNode initialSubFetch = subFetchesBuilder.buildSubFetches(root);
-        this.subFetches = subFetchesBuilder.getSubFetches();
-        postConstruct(root, initialSubFetch);
-    }
-
-    private void postConstruct(RfetchNode root, RfetchNode initialSubFetch) {
-        // fetch root with filter and page data
+        this.subFetches = subFetches;
         NodeKey key = new NodeKey(root);
-        List<Object> objects = getQuery(initialSubFetch).getResultList();
-        fetchedObjects.put(key, new HashSet<>(objects));
-        putNewlyFetchedObjects(objects, initialSubFetch);
+        fetchedObjects.put(key, new HashSet<>(initialObjects));
+        putNewlyFetchedObjects(initialObjects, initialSubFetch);
     }
 
     @Override
-    public List<?> visit(RfetchNode node, Void v) {
+    public Void visit(RfetchNode node, Void v) {
         NodeKey key = new NodeKey(node);
 
         Set<?> objects = fetchedObjects.get(key);
@@ -66,7 +51,7 @@ class SmartRfetchVisitor implements RfetchVisitor<List<?>, Void> {
             child.accept(this, v);
         }
 
-        return new ArrayList<>(objects);
+        return null;
     }
 
     private void processSubFetch(Set<?> objects, RfetchNode subFetch) {
@@ -74,37 +59,34 @@ class SmartRfetchVisitor implements RfetchVisitor<List<?>, Void> {
         putNewlyFetchedObjects(enrichedEntities, subFetch);
     }
 
-    private <T> TypedQuery<T> getQuery(RfetchNode subFetch) {
-        return getQuery((root, cb) -> cb.equal(cb.literal(1), 1), subFetch);
-    }
-
-    private <T> TypedQuery<T> getQuery(@Nullable Set<T> entities, RfetchNode subFetch) {
+    private <S> TypedQuery<S> getQuery(@Nullable Set<S> entities, RfetchNode subFetch) {
         return getQuery((root, cb) -> root.in(entities), subFetch);
     }
 
-    private <T> TypedQuery<T> getQuery(BiFunction<Root<T>, CriteriaBuilder, Predicate> spec, RfetchNode subFetch) {
+    @SuppressWarnings("unchecked")
+    private <S> TypedQuery<S> getQuery(BiFunction<Root<S>, CriteriaBuilder, Predicate> spec, RfetchNode subFetch) {
 
-        Class<T> rootClass = (Class<T>) subFetch.getType();
+        Class<S> rootClass = (Class<S>) subFetch.getType();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(rootClass);
-        Root<T> root = query.from(rootClass);
+        CriteriaQuery<S> query = builder.createQuery(rootClass);
+        Root<S> root = query.from(rootClass);
 
         recursiveFetch(root, subFetch);
 
         query.select(root);
         query.where(spec.apply(root, builder));
 
-        TypedQuery<T> q = em.createQuery(query);
+        query.distinct(true);
 
+        TypedQuery<S> q = em.createQuery(query);
         q.setHint(QueryHints.PASS_DISTINCT_THROUGH, false);
-
         return q;
     }
 
-    private void recursiveFetch(FetchParent root, RfetchNode node) {
+    private void recursiveFetch(FetchParent<?, ?> root, RfetchNode node) {
         for (RfetchNode child : node) {
-            FetchParent fetch = root.fetch(child.getName(), JoinType.LEFT);
+            FetchParent<?, ?> fetch = root.fetch(child.getName(), JoinType.LEFT);
             recursiveFetch(fetch, child);
         }
     }
@@ -116,95 +98,9 @@ class SmartRfetchVisitor implements RfetchVisitor<List<?>, Void> {
             if (fetchedObjects.containsKey(key)) {
                 log.warn("entities was already fetched");
             }
-
-            Set<Object> nestedObjects = new HashSet<>();
-            for (Object enrichedEntity : entities) {
-                Object e = Hibernate.unproxy(enrichedEntity); // it should be already initialized
-                Field field = FieldUtils.getField(e.getClass(), childNodeName, true);
-                Object nestedObject = ReflectionUtils.getField(field, e);
-                if (nestedObject instanceof Collection) {
-                    nestedObjects.addAll((Collection<Object>) nestedObject);
-                } else {
-                    nestedObjects.add(nestedObject);
-                }
-            }
+            Set<Object> nestedObjects = ObjectUtils.extractNestedObjects(entities, childNodeName);
             fetchedObjects.put(key, nestedObjects);
             putNewlyFetchedObjects(nestedObjects, childNode);
-        }
-    }
-
-    @ToString
-    @EqualsAndHashCode
-    @RequiredArgsConstructor
-    private static class NodeKey {
-        private final Class<?> type;
-        private final String name;
-
-        public NodeKey(RfetchNode node) {
-            this.name = node.getName();
-            this.type = node.getType();
-        }
-    }
-
-    @Getter
-    private static class SubFetchesBuilder {
-
-        private static final List<Class<? extends Annotation>> toManyAnnotations =
-                Arrays.asList(ManyToMany.class, OneToMany.class);
-
-        private static final List<Class<? extends Annotation>> toOneAnnotations =
-                Arrays.asList(OneToOne.class, ManyToOne.class);
-
-        private final Map<NodeKey, List<RfetchNode>> subFetches = new HashMap<>();
-
-        private RfetchNode buildSubFetches(RfetchNode node) {
-
-            List<RfetchNode> usedChildren = new ArrayList<>();
-
-            RfetchNode cloneForPhaseOne = node.cloneWithoutChildren(null);
-            node.getChildren().stream()
-                    .filter(c -> c.getAnnotations().stream().anyMatch(a -> toOneAnnotations.contains(a.annotationType())))
-                    .forEach(candidate -> {
-                        RfetchNode subFetch = buildSubFetches(candidate);
-                        cloneForPhaseOne.addChild(subFetch);
-                        usedChildren.add(candidate);
-                    });
-
-            node.getChildren().stream()
-                    .filter(c -> c.getAnnotations().stream().anyMatch(a -> toManyAnnotations.contains(a.annotationType())))
-                    .findAny()
-                    .ifPresent(candidate -> {
-                        RfetchNode subFetch = buildSubFetches(candidate);
-                        cloneForPhaseOne.addChild(subFetch);
-                        usedChildren.add(candidate);
-                    });
-
-            List<RfetchNode> notUsedChild = node.getChildren().stream()
-                    .filter(c -> !usedChildren.contains(c))
-                    .collect(Collectors.toList());
-
-            notUsedChild.forEach(c -> {
-                RfetchNode cloneForPhaseTwo = node.cloneWithoutChildren(null);
-
-                RfetchNode subFetch = buildSubFetches(c);
-                cloneForPhaseTwo.addChild(subFetch);
-
-                subFetches.compute(new NodeKey(cloneForPhaseTwo), (k, oldV) -> {
-                    ArrayList<RfetchNode> result = new ArrayList<>();
-                    result.add(cloneForPhaseTwo);
-                    if (oldV != null) {
-                        result.addAll(oldV);
-                    }
-                    return result;
-                });
-                usedChildren.add(c);
-            });
-
-            if (node.getChildren().size() != usedChildren.size()) {
-                throw new IllegalStateException("not all children was processed");
-            }
-
-            return cloneForPhaseOne;
         }
     }
 

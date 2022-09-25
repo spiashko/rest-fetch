@@ -32,7 +32,7 @@ public class Cat extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "dob")
     private LocalDate dob;
 

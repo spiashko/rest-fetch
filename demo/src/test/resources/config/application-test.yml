@@ -1,4 +1,15 @@
 spring:
+  datasource:
+    url: jdbc:tc:postgresql:14:///test-db
   jpa:
+    show-sql: false
     properties:
-      hibernate.ddl-auto: validate
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL10Dialect
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener: DEBUG
+

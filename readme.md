@@ -34,18 +34,24 @@ in app logs you should find corresponded sql for each request.
 
 This is something that is inspired by graphql and json:api but implemented in more simple way where you can control
 joining of relations. So with its help you can just add request param
-like `include=(relation1,relation2(nestedrelation))`and later in controller you will have two options:
+like `include=(relation1,relation2(nestedrelation))`and later in controller you will have three options:
 
-1. use **FetchAllInOneSpecTemplate** (example:(com/spiashko/rfetch/demo/rest/CatRestController.java:33)) which basically
+1. use **AllInOneFetchTemplate** (example:(com/spiashko/rfetch/demo/rest/CatRestController.java:33)) which basically
    produce spring data Specification which do fetch join so in the end we will get one sql with number of joins. So it
    solves N+1 but worth to mention that this approach has pitfall which is well described
    in [Vlad's post](https://vladmihalcea.com/hibernate-multiplebagfetchexception/) in short this approach leads to
    cartesian product problem and as a consequence of this force us to use Set but this cartesian product problem is
    fixed by our next option
-2. use **FetchSmartTemplate** (example:(com/spiashko/rfetch/demo/rest/PersonRestController.java:37)) which basically
+2. use **LayeredFetchTemplate** (example:(com/spiashko/rfetch/demo/rest/PersonRestController.java:37)) which basically
    solves cartesian product problem by doing only one fetch join on each level and as a consequence of this we don't
    need to use Set. In the end this option fix N+1 and cartesian product problem, but we will have more than one sql
    executed, particularly it will depend on number of included relations
+3. use **SmartFetchTemplate** which basically kind of combination of two approaches above which takes the best from
+   both, in particular:
+   from **AllInOneFetchTemplate** we take nested join, 
+   from **LayeredFetchTemplate** we take concept of fixing cartesian product problem.
+   Therefore, we have generally fewer numbers of queries then **LayeredFetchTemplate**, and we are not forced to use
+   Set for our relations as it is required by **AllInOneFetchTemplate**.
 
 #### Security
 
@@ -55,24 +61,20 @@ throw an Exception.
 
 Example - com/spiashko/rfetch/demo/rest/BeforeRequestActionsExecutor.java:21
 
-#### Self reference resolution (only for demo use)
+#### Jackson support
 
-To make response more clear in terms of included data `com.spiashko.rfetch.demo.selfrefresolution` package was
-created as when we retrieve collection of entities which have relation to itself it leads to situation when hibernate
-autofill that relation and as result jackson also serialise them in respond, but it creates a mess in response, and it
-is not very clear response with what scope was retried so this package resolve it and serialise only what was requested.
+To make response more clear in terms of included data `com.spiashko.rfetch.jackson` package was created.
+This package responsible for forcing jackson to serialise only what was initially requested. 
+Examples when it may be useful:
+ - when we retrieve collection of entities which have relation to itself it leads to situation when hibernate autofill 
+   that relation and as result jackson also serialise them in respond, but it creates a mess in response.
+ - when we want to include in response some field which is based on some nested entities, but we are actually don't 
+   want to see them in response.
 
 #### TODO
 
-- calculated fields in jpa
-- cursor pagination
-- try to apply JSON:API concept
 - add swagger integration
 - tests
-
-#### implementation thoughts:
-
-- if we are going to include on level of aggregation root then there is no need in JSON:API concept
 
 #### usage thoughts:
 

@@ -1,7 +1,7 @@
 package com.spiashko.rfetch.aat.common.person;
 
-import com.spiashko.rfetch.aat.common.crudbase.BaseEntity;
 import com.spiashko.rfetch.aat.common.cat.Cat;
+import com.spiashko.rfetch.aat.common.crudbase.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
