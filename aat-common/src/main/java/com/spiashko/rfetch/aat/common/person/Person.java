@@ -32,6 +32,10 @@ public class Person extends BaseEntity {
     @OneToMany(mappedBy = Cat.Fields.owner, fetch = FetchType.LAZY)
     private Set<Cat> kittens;
 
+    @ManyToOne(fetch = FetchType.LAZY) // obviously it is OneToOne this is just a trick to make lazy loading
+    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    private PersonNumberOfKittensFormula numberOfKittens;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_best_friend")
     private Person bestFriend;

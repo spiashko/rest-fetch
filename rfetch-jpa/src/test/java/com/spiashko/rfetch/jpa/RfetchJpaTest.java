@@ -62,7 +62,7 @@ class RfetchJpaTest extends BaseApplicationTest {
     @Test
     void layered_fixCartesianProductProblem() {
 
-        String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend)";
+        String rfetch = "(kittens(motherForKids,fatherForKids),bestFriend,numberOfKittens)";
 
         List<Person> all = transactionTemplate.execute(s -> {
             List<Person> people = repository.findAll();
