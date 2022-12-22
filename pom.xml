@@ -11,7 +11,7 @@
 
     <groupId>com.spiashko.rest-fetch</groupId>
     <artifactId>rest-fetch-parent</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
 
     <packaging>pom</packaging>
 
@@ -27,7 +27,7 @@
         <connection>scm:git:git@github.com:spiashko/rest-fetch.git</connection>
         <url>git@github.com:spiashko/rest-fetch</url>
         <developerConnection>scm:git:git@github.com:spiashko/rest-fetch.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.0.3</tag>
     </scm>
 
     <distributionManagement>
