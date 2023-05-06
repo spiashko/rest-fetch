@@ -80,3 +80,9 @@ Examples when it may be useful:
 
 - as this something that configured on each separate endpoint then it means that for some tricky case we can always
   write endpoint in our usual way with dto and other boring things
+
+#### how to release
+```shell
+mvn release:prepare
+mvn release:perform
+```
