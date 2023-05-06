@@ -20,7 +20,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <testcontainers.version>1.16.3</testcontainers.version>
-        <rest-fetch.version>0.0.4-SNAPSHOT</rest-fetch.version>
+        <rest-fetch.version>0.0.5-SNAPSHOT</rest-fetch.version>
     </properties>
 
     <dependencies>
